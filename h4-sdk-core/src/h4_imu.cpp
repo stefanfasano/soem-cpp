@@ -5,45 +5,67 @@
 #include "h4_imu.h"
 #include <string>
 
-h4_imu::h4_imu(const std::string &name, const uint32_t &address)
+h4_imu::h4_imu(const std::string &name, const uint32_t &alias)
 : abstract_imu(name)
 {
-    // pdoInfo_.rxPdoId_ = RX_PDO_ID;
-    // pdoInfo_.txPdoId_ = TX_PDO_ID;
-    // pdoInfo_.rxPdoSize_ = sizeof(command_);
-    // pdoInfo_.txPdoSize_ = sizeof(reading_);
-    // pdoInfo_.moduleId_ = PRODUCT_CODE;
+    set_id(name, VENDOR_ID, PRODUCT_CODE);
+
+    configure_at_init( [this]()
+    {
+    // Link maps
+    // Config Command PDO mapping (Rx PDO assign: 0x1c12)
+    start_command_pdo_mapping<uint8_t>();
+    add_command_pdo_mapping<uint8_t>(RX_PDO_ID); //Assign IO Map at CoE index 0x1600 to Rx PDO in 0x1c12.
+    end_command_pdo_mapping<uint8_t>();
+
+    // Config Status PDO mapping (Tx PDO assign: 0x1c13)
+    start_status_pdo_mapping<uint8_t>();
+    add_status_pdo_mapping<uint8_t>(TX_PDO_ID);  //Assign IO Map at CoE index 0x1A00 to Tx PDO in 0x1c13.
+    end_status_pdo_mapping<uint8_t>();
+    });
+
+    // Communication buffer configuration (RxPDO / TxPDO)
+    define_physical_buffer<buffer_out_cyclic_command_t>(SYNCHROS_OUT, 0x1060, 0x00010064);
+    define_physical_buffer<buffer_in_cyclic_status_t>(SYNCHROS_IN, 0x10f0, 0x00010020);
+
+    // Decide whether to use a distributed clock
+    define_distributed_clock(false);
+
+    add_init_step(
+   [this]() { update_command_buffer(); },
+   [this]() { unpack_status_buffer(); }
+   );
+
+    add_run_step(
+        [this]() { update_command_buffer(); },
+        [this]() { unpack_status_buffer(); }
+    );
+
+    //add_end_step(...);
 }
 
-// bool h4_imu::startup()
+// void h4_imu::update()
 // {
-//     // Do nothing else
-//     return true;
+//     unpack_status_buffer();
+//     update_command_buffer();
+//
+//     setPosition(0.0, 0.0, 0.0);
+//     setQuaternion(0.0, 0.0, 0.0, 0.0);
+//     setAngularVelocity(reading_.gyroX * RAW_GYRO_TO_RAD_PER_SEC, reading_.gyroY * RAW_GYRO_TO_RAD_PER_SEC, reading_.gyroZ * RAW_GYRO_TO_RAD_PER_SEC);
+//     setLinearAcceleration(reading_.accelX * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, reading_.accelY * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, reading_.accelZ * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC);
 // }
 
-void h4_imu::update()
-{
-    // updateRead();
+void h4_imu::update_command_buffer() {
+    const auto buffer = this->output_buffer<buffer_out_cyclic_command_t>(0x1800);
+    buffer->reset = 0;
+}
 
+void h4_imu::unpack_status_buffer() {
+    const auto buffer = this->input_buffer<buffer_in_cyclic_status_t>(0x1c00);
     setPosition(0.0, 0.0, 0.0);
     setQuaternion(0.0, 0.0, 0.0, 0.0);
-    setAngularVelocity(reading_.gyroX * RAW_GYRO_TO_RAD_PER_SEC, reading_.gyroY * RAW_GYRO_TO_RAD_PER_SEC, reading_.gyroZ * RAW_GYRO_TO_RAD_PER_SEC);
-    setLinearAcceleration(reading_.accelX * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, reading_.accelY * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, reading_.accelZ * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC);
-
-    // updateWrite();
+    setAngularVelocity(buffer->gyroX * RAW_GYRO_TO_RAD_PER_SEC, buffer->gyroY * RAW_GYRO_TO_RAD_PER_SEC, buffer->gyroZ * RAW_GYRO_TO_RAD_PER_SEC);
+    setLinearAcceleration(buffer->accelX * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, buffer->accelY * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, buffer->accelZ * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC);
+    setIMUTemp(buffer->imuTemp * RAW_TEMP_TO_CELCIUS_SCALAR + RAW_TEMP_TO_CELCIUS_CONSTANT);
+    setBoardTemp(buffer->boardTemp * RAW_TEMP_TO_CELCIUS_SCALAR + RAW_TEMP_TO_CELCIUS_CONSTANT);
 }
-
-// void h4_imu::updateRead()
-// {
-//     bus_->readTxPdo(address_, reading_);
-// }
-//
-// void h4_imu::updateWrite()
-// {
-//     bus_->writeRxPdo(address_, command_);
-// }
-//
-// void h4_imu::shutdown()
-// {
-//     // Do nothing
-// }
