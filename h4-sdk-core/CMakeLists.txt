@@ -30,17 +30,24 @@ import_PID_Package(PACKAGE pid-os-utilities)
 include_directories(src include apps)
 
 ### creating a library
-add_library(mylib SHARED
-        include/lib.h
-        src/lib.cpp)
-bind_PID_Components(LIB mylib COMPONENTS ethercatcpp-core/ethercatcpp-core)
+add_library(h4SDKCore SHARED
+        include/abstract_imu.h
+        include/abstract_motor_controller.h
+        include/h4_ethersnacks_board.h
+        include/h4_imu.h
+        src/abstract_imu.cpp
+        src/abstract_motor_controller.cpp
+        src/h4_ethersnacks_board.cpp
+        src/h4_imu.cpp
+)
+bind_PID_Components(LIB h4SDKCore COMPONENTS ethercatcpp-core/ethercatcpp-core)
 
 ### creating an executable
-add_executable(myapp apps/h4IMUTestbed.cpp)
-bind_PID_Components(EXE myapp COMPONENTS pid-threading/synchro pid-os-utilities/realtime pid-os-utilities/signal-manager)
-bind_Local_Component(EXE myapp COMPONENT mylib)
+add_executable(h4IMUTestbed apps/h4IMUTestbed.cpp)
+bind_PID_Components(EXE h4IMUTestbed COMPONENTS pid-threading/synchro pid-os-utilities/realtime pid-os-utilities/signal-manager)
+bind_Local_Component(EXE h4IMUTestbed COMPONENT h4SDKCore)
 
-install(TARGETS mylib
+install(TARGETS h4SDKCore h4IMUTestbed
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
