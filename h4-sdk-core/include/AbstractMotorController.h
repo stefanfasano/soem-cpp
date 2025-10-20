@@ -8,7 +8,7 @@
 #include <string>
 using namespace std;
 
-class abstract_motor_controller
+class AbstractMotorController
 {
   string name;
 
@@ -23,7 +23,7 @@ class abstract_motor_controller
   float tau_desired; // desired torque
 
   public:
-  explicit abstract_motor_controller(const string& name);
+  explicit AbstractMotorController(const string& name);
 
   virtual void update() = 0;
 
@@ -49,7 +49,7 @@ class abstract_motor_controller
 
   virtual string getName();
 
-  virtual ~abstract_motor_controller()= default;
+  virtual ~AbstractMotorController()= default;
 };
 
 

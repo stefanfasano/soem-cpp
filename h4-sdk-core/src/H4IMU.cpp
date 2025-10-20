@@ -2,9 +2,12 @@
 // Created by srfas on 9/6/2025.
 //
 
-#include "h4_ethersnacks_board.h"
+#include "H4IMU.h"
+#include <string>
+#include "pid/log.h"
 
-h4_ethersnacks_board::h4_ethersnacks_board(const string& name, bool addImu) : name(name), abstract_imu_(name + "_imu")
+H4IMU::H4IMU(const std::string &name, const uint32_t &alias)
+: AbstractIMU(name)
 {
     set_id(name, VENDOR_ID, PRODUCT_CODE);
 
@@ -42,22 +45,18 @@ h4_ethersnacks_board::h4_ethersnacks_board(const string& name, bool addImu) : na
     //add_end_step(...);
 }
 
-void h4_ethersnacks_board::update_command_buffer() {
+void H4IMU::update_command_buffer() {
     const auto buffer = this->output_buffer<buffer_out_cyclic_command_t>(0x1800);
-    buffer->status = 0;
+    buffer->reset = 0;
 }
 
-void h4_ethersnacks_board::unpack_status_buffer() {
+void H4IMU::unpack_status_buffer() {
     const auto buffer = this->input_buffer<buffer_in_cyclic_status_t>(0x1c00);
 
-    abstract_imu_.setPosition(0.0, 0.0, 0.0);
-    abstract_imu_.setQuaternion(0.0, 0.0, 0.0, 0.0);
-    abstract_imu_.setAngularVelocity(buffer->gyroX * RAW_GYRO_TO_RAD_PER_SEC, buffer->gyroY * RAW_GYRO_TO_RAD_PER_SEC, buffer->gyroZ * RAW_GYRO_TO_RAD_PER_SEC);
-    abstract_imu_.setLinearAcceleration(buffer->accelX * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, buffer->accelY * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, buffer->accelZ * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC);
-    abstract_imu_.setIMUTemp(buffer->imuTemp * RAW_TEMP_TO_CELCIUS_SCALAR + RAW_TEMP_TO_CELCIUS_CONSTANT);
-    //abstract_imu_.setBoardTemp(buffer->sensorTemp * RAW_TEMP_TO_CELCIUS_SCALAR + RAW_TEMP_TO_CELCIUS_CONSTANT);
-}
-
-void h4_ethersnacks_board::print() {
-    abstract_imu_.print();
+    setPosition(0.0, 0.0, 0.0);
+    setQuaternion(0.0, 0.0, 0.0, 0.0);
+    setAngularVelocity(buffer->gyroX * RAW_GYRO_TO_RAD_PER_SEC, buffer->gyroY * RAW_GYRO_TO_RAD_PER_SEC, buffer->gyroZ * RAW_GYRO_TO_RAD_PER_SEC);
+    setLinearAcceleration(buffer->accelX * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, buffer->accelY * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, buffer->accelZ * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC);
+    setIMUTemp(buffer->imuTemp * RAW_TEMP_TO_CELCIUS_SCALAR + RAW_TEMP_TO_CELCIUS_CONSTANT);
+    setBoardTemp(buffer->boardTemp * RAW_TEMP_TO_CELCIUS_SCALAR + RAW_TEMP_TO_CELCIUS_CONSTANT);
 }

@@ -31,24 +31,24 @@ include_directories(src include apps)
 
 ### creating a library
 add_library(h4SDKCore SHARED
-        include/abstract_imu.h
-        include/abstract_motor_controller.h
-        include/h4_ethersnacks_board.h
-        include/h4_imu.h
-        src/abstract_imu.cpp
-        src/abstract_motor_controller.cpp
-        src/h4_ethersnacks_board.cpp
-        src/h4_imu.cpp
+        include/AbstractIMU.h
+        include/AbstractMotorController.h
+        include/H4EtherSnacksBoard.h
+        include/H4IMU.h
+        src/AbstractIMU.cpp
+        src/AbstractMotorController.cpp
+        src/H4EtherSnacksBoard.cpp
+        src/H4IMU.cpp
 )
 bind_PID_Components(LIB h4SDKCore COMPONENTS ethercatcpp-core/ethercatcpp-core)
 
 ### creating an executable (h4IMUTestbed)
-add_executable(h4IMUTestbed apps/h4IMUTestbed.cpp)
+add_executable(h4IMUTestbed apps/H4IMUTestbed.cpp)
 bind_PID_Components(EXE h4IMUTestbed COMPONENTS pid-threading/synchro pid-os-utilities/realtime pid-os-utilities/signal-manager)
 bind_Local_Component(EXE h4IMUTestbed COMPONENT h4SDKCore)
 
 ### creating an executable (h4IMUTestbed)
-add_executable(h4EtherSnacksTestbed apps/h4EtherSnacksTestbed.cpp)
+add_executable(h4EtherSnacksTestbed apps/H4EtherSnacksTestbed.cpp)
 bind_PID_Components(EXE h4EtherSnacksTestbed COMPONENTS pid-threading/synchro pid-os-utilities/realtime pid-os-utilities/signal-manager)
 bind_Local_Component(EXE h4EtherSnacksTestbed COMPONENT h4SDKCore)
 

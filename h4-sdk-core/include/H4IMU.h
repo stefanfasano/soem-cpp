@@ -11,7 +11,7 @@
 #define VENDOR_ID 0x1011
 #define PRODUCT_CODE 0x00000200
 
-#include "abstract_imu.h"
+#include "AbstractIMU.h"
 #include <numbers>
 #include <ethercatcpp/slave_device.h>
 
@@ -32,7 +32,7 @@ struct [[gnu::packed]] buffer_out_cyclic_command_t {
   uint16_t reset = 0;
 } __attribute__((packed));
 
-class h4_imu : public abstract_imu, public ethercatcpp::SlaveDevice
+class H4IMU : public AbstractIMU, public ethercatcpp::SlaveDevice
 {
   const float GRAVITY = 9.80665;
   const float RAW_ACCEL_TO_G = 0.000244;
@@ -44,7 +44,7 @@ class h4_imu : public abstract_imu, public ethercatcpp::SlaveDevice
   float boardTemp = 0.0;
 
   public:
-  h4_imu(const std::string& name, const uint32_t& alias);
+  H4IMU(const std::string& name, const uint32_t& alias);
 
   void update() override {}
 
@@ -58,7 +58,7 @@ class h4_imu : public abstract_imu, public ethercatcpp::SlaveDevice
 
   std::string getName() const override { return name_; }
 
-  ~h4_imu() override = default;
+  ~H4IMU() override = default;
 };
 
 

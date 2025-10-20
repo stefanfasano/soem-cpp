@@ -10,7 +10,7 @@
 #define VENDOR_ID 0x00000603
 #define PRODUCT_CODE 0x42000000
 
-#include "abstract_imu.h"
+#include "AbstractIMU.h"
 #include <numbers>
 #include <string>
 #include <ethercatcpp/slave_device.h>
@@ -39,7 +39,7 @@ struct [[gnu::packed]] buffer_out_cyclic_command_t {
   uint16_t status = 0;
 } __attribute__((packed));
 
-class h4_ethersnacks_board : public ethercatcpp::SlaveDevice
+class H4EtherSnacksBoard : public ethercatcpp::SlaveDevice
 {
   const float GRAVITY = 9.80665;
   const float RAW_ACCEL_TO_G = 0.000244;
@@ -49,10 +49,10 @@ class h4_ethersnacks_board : public ethercatcpp::SlaveDevice
   const float RAW_TEMP_TO_CELCIUS_CONSTANT = 25.0;
 
   string name;
-  abstract_imu abstract_imu_;
+  AbstractIMU abstractIMU;
 
   public:
-  h4_ethersnacks_board(const string& name, bool addIMU);
+  H4EtherSnacksBoard(const string& name, bool addIMU);
 
   void update_command_buffer();
 
@@ -60,11 +60,11 @@ class h4_ethersnacks_board : public ethercatcpp::SlaveDevice
 
   virtual void print();
 
-  virtual abstract_imu get_imu();
+  virtual AbstractIMU get_imu();
 
   virtual string get_name();
 
-  virtual ~h4_ethersnacks_board() = default;
+  virtual ~H4EtherSnacksBoard() = default;
 };
 
 

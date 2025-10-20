@@ -8,7 +8,7 @@
 #include <string>
 
 
-class abstract_imu
+class AbstractIMU
 {
   protected:
   std::string name_;
@@ -20,7 +20,7 @@ class abstract_imu
   float imuTemp = 0.0;
 
   public:
-  explicit abstract_imu(const std::string& name);
+  explicit AbstractIMU(const std::string& name);
 
   virtual void update();
 
@@ -48,7 +48,7 @@ class abstract_imu
 
   virtual std::string getName() const { return name_; }
 
-  virtual ~abstract_imu() = default;
+  virtual ~AbstractIMU() = default;
 };
 
 

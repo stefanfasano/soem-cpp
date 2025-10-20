@@ -2,12 +2,9 @@
 // Created by srfas on 9/6/2025.
 //
 
-#include "h4_imu.h"
-#include <string>
-#include "pid/log.h"
+#include "H4EtherSnacksBoard.h"
 
-h4_imu::h4_imu(const std::string &name, const uint32_t &alias)
-: abstract_imu(name)
+H4EtherSnacksBoard::H4EtherSnacksBoard(const string& name, bool addImu) : name(name), abstractIMU(name + "_imu")
 {
     set_id(name, VENDOR_ID, PRODUCT_CODE);
 
@@ -45,18 +42,22 @@ h4_imu::h4_imu(const std::string &name, const uint32_t &alias)
     //add_end_step(...);
 }
 
-void h4_imu::update_command_buffer() {
+void H4EtherSnacksBoard::update_command_buffer() {
     const auto buffer = this->output_buffer<buffer_out_cyclic_command_t>(0x1800);
-    buffer->reset = 0;
+    buffer->status = 0;
 }
 
-void h4_imu::unpack_status_buffer() {
+void H4EtherSnacksBoard::unpack_status_buffer() {
     const auto buffer = this->input_buffer<buffer_in_cyclic_status_t>(0x1c00);
 
-    setPosition(0.0, 0.0, 0.0);
-    setQuaternion(0.0, 0.0, 0.0, 0.0);
-    setAngularVelocity(buffer->gyroX * RAW_GYRO_TO_RAD_PER_SEC, buffer->gyroY * RAW_GYRO_TO_RAD_PER_SEC, buffer->gyroZ * RAW_GYRO_TO_RAD_PER_SEC);
-    setLinearAcceleration(buffer->accelX * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, buffer->accelY * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, buffer->accelZ * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC);
-    setIMUTemp(buffer->imuTemp * RAW_TEMP_TO_CELCIUS_SCALAR + RAW_TEMP_TO_CELCIUS_CONSTANT);
-    setBoardTemp(buffer->boardTemp * RAW_TEMP_TO_CELCIUS_SCALAR + RAW_TEMP_TO_CELCIUS_CONSTANT);
+    abstractIMU.setPosition(0.0, 0.0, 0.0);
+    abstractIMU.setQuaternion(0.0, 0.0, 0.0, 0.0);
+    abstractIMU.setAngularVelocity(buffer->gyroX * RAW_GYRO_TO_RAD_PER_SEC, buffer->gyroY * RAW_GYRO_TO_RAD_PER_SEC, buffer->gyroZ * RAW_GYRO_TO_RAD_PER_SEC);
+    abstractIMU.setLinearAcceleration(buffer->accelX * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, buffer->accelY * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, buffer->accelZ * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC);
+    abstractIMU.setIMUTemp(buffer->imuTemp * RAW_TEMP_TO_CELCIUS_SCALAR + RAW_TEMP_TO_CELCIUS_CONSTANT);
+    //abstract_imu_.setBoardTemp(buffer->sensorTemp * RAW_TEMP_TO_CELCIUS_SCALAR + RAW_TEMP_TO_CELCIUS_CONSTANT);
+}
+
+void H4EtherSnacksBoard::print() {
+    abstractIMU.print();
 }
