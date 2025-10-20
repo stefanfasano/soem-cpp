@@ -15,8 +15,7 @@
 #include <numbers>
 #include <ethercatcpp/slave_device.h>
 
- struct [[gnu::packed]]buffer_in_cyclic_status_t
-{
+struct [[gnu::packed]]buffer_in_cyclic_status_t {
   int16_t accelX = 0;
   int16_t accelY = 0;
   int16_t accelZ = 0;
@@ -29,12 +28,11 @@
   uint16_t slaveCycleTime = 0;
 } __attribute__((packed));
 
-struct [[gnu::packed]] buffer_out_cyclic_command_t
-{
+struct [[gnu::packed]] buffer_out_cyclic_command_t {
   uint16_t reset = 0;
 } __attribute__((packed));
 
-class h4_imu : public abstract_imu, ethercatcpp::SlaveDevice
+class h4_imu : public abstract_imu, public ethercatcpp::SlaveDevice
 {
   const float GRAVITY = 9.80665;
   const float RAW_ACCEL_TO_G = 0.000244;
@@ -43,11 +41,10 @@ class h4_imu : public abstract_imu, ethercatcpp::SlaveDevice
   const float RAW_TEMP_TO_CELCIUS_SCALAR = 1.0 / 132.48;
   const float RAW_TEMP_TO_CELCIUS_CONSTANT = 25.0;
 
-  float imuTemp = 0.0;
   float boardTemp = 0.0;
 
   public:
-  explicit h4_imu(const std::string& name, const uint32_t& alias);
+  h4_imu(const std::string& name, const uint32_t& alias);
 
   void update() override {}
 
@@ -55,11 +52,7 @@ class h4_imu : public abstract_imu, ethercatcpp::SlaveDevice
 
   void unpack_status_buffer();
 
-  void setIMUTemp(const float& imuTemp_) { this->imuTemp = imuTemp_; }
-
   void setBoardTemp(const float& boardTemp_) { this->boardTemp = boardTemp_; }
-
-  float getIMUTemp() const { return imuTemp; }
 
   float getBoardTemp() const { return boardTemp; }
 

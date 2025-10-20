@@ -42,12 +42,17 @@ add_library(h4SDKCore SHARED
 )
 bind_PID_Components(LIB h4SDKCore COMPONENTS ethercatcpp-core/ethercatcpp-core)
 
-### creating an executable
+### creating an executable (h4IMUTestbed)
 add_executable(h4IMUTestbed apps/h4IMUTestbed.cpp)
 bind_PID_Components(EXE h4IMUTestbed COMPONENTS pid-threading/synchro pid-os-utilities/realtime pid-os-utilities/signal-manager)
 bind_Local_Component(EXE h4IMUTestbed COMPONENT h4SDKCore)
 
-install(TARGETS h4SDKCore h4IMUTestbed
+### creating an executable (h4IMUTestbed)
+add_executable(h4EtherSnacksTestbed apps/h4EtherSnacksTestbed.cpp)
+bind_PID_Components(EXE h4EtherSnacksTestbed COMPONENTS pid-threading/synchro pid-os-utilities/realtime pid-os-utilities/signal-manager)
+bind_Local_Component(EXE h4EtherSnacksTestbed COMPONENT h4SDKCore)
+
+install(TARGETS h4SDKCore h4IMUTestbed h4EtherSnacksTestbed
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)

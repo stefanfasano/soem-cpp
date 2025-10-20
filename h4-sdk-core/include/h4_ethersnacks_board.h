@@ -5,25 +5,60 @@
 #ifndef H4_SDK_WARMUP_H4_ETHERSNACKS_BOARD_H
 #define H4_SDK_WARMUP_H4_ETHERSNACKS_BOARD_H
 
+#define RX_PDO_ID 0x1600
+#define TX_PDO_ID 0x1A00
+#define VENDOR_ID 0x00000603
+#define PRODUCT_CODE 0x42000000
+
 #include "abstract_imu.h"
-#include <array>
+#include <numbers>
 #include <string>
 #include <ethercatcpp/slave_device.h>
 
 using namespace std;
 
+struct [[gnu::packed]]buffer_in_cyclic_status_t {
+  int16_t accelX = 0;
+  int16_t accelY = 0;
+  int16_t accelZ = 0;
+  int16_t gyroX = 0;
+  int16_t gyroY = 0;
+  int16_t gyroZ = 0;
+  uint16_t imuTemp = 0;
+  uint16_t sensorTemp = 0;
+  uint16_t ethersnacksCycleCounter = 0;
+  uint16_t lastEthercatCycleTime = 0;
+  uint16_t ethercatLinkStatus = 0;
+  uint16_t lastEtherSnacksCycleTime = 0;
+  uint16_t measuredInputVoltage = 0;
+  uint16_t measuredOutputVoltage = 0;
+  uint16_t measuredCurrentLoad = 0;
+} __attribute__((packed));
 
-class h4_ethersnacks_board
+struct [[gnu::packed]] buffer_out_cyclic_command_t {
+  uint16_t status = 0;
+} __attribute__((packed));
+
+class h4_ethersnacks_board : public ethercatcpp::SlaveDevice
 {
+  const float GRAVITY = 9.80665;
+  const float RAW_ACCEL_TO_G = 0.000244;
+  const float RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC = RAW_ACCEL_TO_G * GRAVITY;
+  const float RAW_GYRO_TO_RAD_PER_SEC = (2000.0 * (std::numbers::pi * 2.0) / 360.0) / 65535.0;
+  const float RAW_TEMP_TO_CELCIUS_SCALAR = 1.0 / 132.48;
+  const float RAW_TEMP_TO_CELCIUS_CONSTANT = 25.0;
+
   string name;
   abstract_imu abstract_imu_;
 
   public:
-  h4_ethersnacks_board(const string& name, const abstract_imu& abstract_imu);
+  h4_ethersnacks_board(const string& name, bool addIMU);
 
-  virtual void read();
+  void update_command_buffer();
 
-  virtual void write();
+  void unpack_status_buffer();
+
+  virtual void print();
 
   virtual abstract_imu get_imu();
 

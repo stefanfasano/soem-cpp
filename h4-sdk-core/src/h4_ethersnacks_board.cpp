@@ -4,7 +4,60 @@
 
 #include "h4_ethersnacks_board.h"
 
+h4_ethersnacks_board::h4_ethersnacks_board(const string& name, bool addImu) : name(name), abstract_imu_(name + "_imu")
+{
+    set_id(name, VENDOR_ID, PRODUCT_CODE);
 
-#include "abstract_motor_controller.h"
+    configure_at_init( [this]()
+    {
+    // Link maps
+    // Config Command PDO mapping (Rx PDO assign: 0x1c12)
+    start_command_pdo_mapping<uint8_t>();
+    add_command_pdo_mapping<uint8_t>(RX_PDO_ID); //Assign IO Map at CoE index 0x1600 to Rx PDO in 0x1c12.
+    end_command_pdo_mapping<uint8_t>();
 
-h4_ethersnacks_board::h4_ethersnacks_board(const string& name, const abstract_imu& abstract_imu_) : name(name), abstract_imu_(name) {}
+    // Config Status PDO mapping (Tx PDO assign: 0x1c13)
+    start_status_pdo_mapping<uint8_t>();
+    add_status_pdo_mapping<uint8_t>(TX_PDO_ID);  //Assign IO Map at CoE index 0x1A00 to Tx PDO in 0x1c13.
+    end_status_pdo_mapping<uint8_t>();
+    });
+
+    // Communication buffer configuration (RxPDO / TxPDO)
+    define_physical_buffer<buffer_out_cyclic_command_t>(SYNCHROS_OUT, 0x1060, 0x00010064); //TODO make sure these are right
+    define_physical_buffer<buffer_in_cyclic_status_t>(SYNCHROS_IN, 0x10f0, 0x00010020);
+
+    // Decide whether to use a distributed clock
+    define_distributed_clock(false);
+
+    add_init_step(
+   [this]() { update_command_buffer(); },
+   [this]() { unpack_status_buffer(); }
+   );
+
+    add_run_step(
+        [this]() { update_command_buffer(); },
+        [this]() { unpack_status_buffer(); }
+    );
+
+    //add_end_step(...);
+}
+
+void h4_ethersnacks_board::update_command_buffer() {
+    const auto buffer = this->output_buffer<buffer_out_cyclic_command_t>(0x1800);
+    buffer->status = 0;
+}
+
+void h4_ethersnacks_board::unpack_status_buffer() {
+    const auto buffer = this->input_buffer<buffer_in_cyclic_status_t>(0x1c00);
+
+    abstract_imu_.setPosition(0.0, 0.0, 0.0);
+    abstract_imu_.setQuaternion(0.0, 0.0, 0.0, 0.0);
+    abstract_imu_.setAngularVelocity(buffer->gyroX * RAW_GYRO_TO_RAD_PER_SEC, buffer->gyroY * RAW_GYRO_TO_RAD_PER_SEC, buffer->gyroZ * RAW_GYRO_TO_RAD_PER_SEC);
+    abstract_imu_.setLinearAcceleration(buffer->accelX * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, buffer->accelY * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, buffer->accelZ * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC);
+    abstract_imu_.setIMUTemp(buffer->imuTemp * RAW_TEMP_TO_CELCIUS_SCALAR + RAW_TEMP_TO_CELCIUS_CONSTANT);
+    //abstract_imu_.setBoardTemp(buffer->sensorTemp * RAW_TEMP_TO_CELCIUS_SCALAR + RAW_TEMP_TO_CELCIUS_CONSTANT);
+}
+
+void h4_ethersnacks_board::print() {
+    abstract_imu_.print();
+}

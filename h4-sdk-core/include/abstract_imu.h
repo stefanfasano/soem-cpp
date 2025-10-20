@@ -17,11 +17,14 @@ class abstract_imu
   std::array<float, 4> quaternion; // In world frame (x, y, z, s)
   std::array<float, 3> angularVelocity; // In sensor frame (x, y, z)
   std::array<float, 3> linearAcceleration; // In sensor frame (x, y, z)
+  float imuTemp = 0.0;
 
   public:
   explicit abstract_imu(const std::string& name);
 
   virtual void update();
+
+  virtual void print();
 
   virtual void setPosition(const float& x, const float& y, const float& z);
 
@@ -31,6 +34,8 @@ class abstract_imu
 
   virtual void setLinearAcceleration(const float& x, const float& y, const float& z);
 
+  virtual void setIMUTemp(const float& imuTemp_) { this->imuTemp = imuTemp_; }
+
   virtual std::array<float, 3> getPosition() const { return position; }
 
   virtual std::array<float, 4> getQuaternion() const { return quaternion; }
@@ -38,6 +43,8 @@ class abstract_imu
   virtual std::array<float, 3> getAngularVelocity() const { return angularVelocity; }
 
   virtual std::array<float, 3> getLinearAcceleration() const { return linearAcceleration; }
+
+  virtual float getIMUTemp() const { return imuTemp; }
 
   virtual std::string getName() const { return name_; }
 

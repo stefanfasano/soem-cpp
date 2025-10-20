@@ -4,6 +4,7 @@
 
 #include "h4_imu.h"
 #include <string>
+#include "pid/log.h"
 
 h4_imu::h4_imu(const std::string &name, const uint32_t &alias)
 : abstract_imu(name)
@@ -25,7 +26,7 @@ h4_imu::h4_imu(const std::string &name, const uint32_t &alias)
     });
 
     // Communication buffer configuration (RxPDO / TxPDO)
-    define_physical_buffer<buffer_out_cyclic_command_t>(SYNCHROS_OUT, 0x1060, 0x00010064);
+    define_physical_buffer<buffer_out_cyclic_command_t>(SYNCHROS_OUT, 0x1060, 0x00010064); //TODO make sure these are right
     define_physical_buffer<buffer_in_cyclic_status_t>(SYNCHROS_IN, 0x10f0, 0x00010020);
 
     // Decide whether to use a distributed clock
@@ -44,17 +45,6 @@ h4_imu::h4_imu(const std::string &name, const uint32_t &alias)
     //add_end_step(...);
 }
 
-// void h4_imu::update()
-// {
-//     unpack_status_buffer();
-//     update_command_buffer();
-//
-//     setPosition(0.0, 0.0, 0.0);
-//     setQuaternion(0.0, 0.0, 0.0, 0.0);
-//     setAngularVelocity(reading_.gyroX * RAW_GYRO_TO_RAD_PER_SEC, reading_.gyroY * RAW_GYRO_TO_RAD_PER_SEC, reading_.gyroZ * RAW_GYRO_TO_RAD_PER_SEC);
-//     setLinearAcceleration(reading_.accelX * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, reading_.accelY * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC, reading_.accelZ * RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC);
-// }
-
 void h4_imu::update_command_buffer() {
     const auto buffer = this->output_buffer<buffer_out_cyclic_command_t>(0x1800);
     buffer->reset = 0;
@@ -62,6 +52,7 @@ void h4_imu::update_command_buffer() {
 
 void h4_imu::unpack_status_buffer() {
     const auto buffer = this->input_buffer<buffer_in_cyclic_status_t>(0x1c00);
+
     setPosition(0.0, 0.0, 0.0);
     setQuaternion(0.0, 0.0, 0.0, 0.0);
     setAngularVelocity(buffer->gyroX * RAW_GYRO_TO_RAD_PER_SEC, buffer->gyroY * RAW_GYRO_TO_RAD_PER_SEC, buffer->gyroZ * RAW_GYRO_TO_RAD_PER_SEC);
