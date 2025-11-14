@@ -61,3 +61,11 @@ void H4EtherSnacksBoard::unpack_status_buffer() {
 void H4EtherSnacksBoard::print() {
     abstractIMU.print();
 }
+
+AbstractIMU H4EtherSnacksBoard::get_imu() {
+    return abstractIMU;
+}
+
+string H4EtherSnacksBoard::get_name() {
+    return name;
+}

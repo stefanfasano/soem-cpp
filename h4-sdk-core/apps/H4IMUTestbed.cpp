@@ -13,13 +13,13 @@
 using std::chrono_literals::operator ""ms;
 
 int main(int argc, char* argv[]) {
-    auto memory_locker = pid::make_current_thread_real_time();
+    // auto memory_locker = pid::make_current_thread_real_time();
 
     // Master creation
     ethercatcpp::Master master;
 
     // Adding network interface (replace by adequet id)
-    master.set_primary_interface("eth0");
+    master.set_primary_interface("enp89s0");
 
     // Device definition
     // ethercatcpp::EK1100 EK1100;
