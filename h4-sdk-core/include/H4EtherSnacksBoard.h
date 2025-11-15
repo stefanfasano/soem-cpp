@@ -13,7 +13,7 @@
 using namespace std;
 
 #define RX_PDO_ID 0x1600
-#define TX_PDO_ID 0x1A00
+#define TX_PDO_ID 0x1a00
 
 class H4EtherSnacksBoard : public ethercatcpp::SlaveDevice
 {
@@ -26,13 +26,13 @@ class H4EtherSnacksBoard : public ethercatcpp::SlaveDevice
     int16_t gyroZ = 0;
     uint16_t imuTemp = 0;
     uint16_t sensorTemp = 0;
-    uint16_t ethersnacksCycleCounter = 0;
-    uint16_t lastEthercatCycleTime = 0;
-    uint16_t ethercatLinkStatus = 0;
-    uint16_t lastEtherSnacksCycleTime = 0;
-    uint16_t measuredInputVoltage = 0;
-    uint16_t measuredOutputVoltage = 0;
-    uint16_t measuredCurrentLoad = 0;
+    uint16_t EthersnacksCycleCounter = 0;
+    uint16_t LastEthercatCycleTime = 0;
+    uint16_t EthercatLinkStatus = 0;
+    uint16_t LastEtherSnacksCycleTime = 0;
+    uint16_t MeasuredInputVoltage = 0;
+    uint16_t MeasuredOutputVoltage = 0;
+    uint16_t MeasuredCurrentLoad = 0;
   } __attribute__((packed));
 
   struct [[gnu::packed]] buffer_out_cyclic_command_t {

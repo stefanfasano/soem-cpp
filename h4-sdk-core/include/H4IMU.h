@@ -10,7 +10,7 @@
 #include <ethercatcpp/slave_device.h>
 
 #define RX_PDO_ID 0x1600
-#define TX_PDO_ID 0x1A00
+#define TX_PDO_ID 0x1a00
 
 class H4IMU : public AbstractIMU, public ethercatcpp::SlaveDevice
 {

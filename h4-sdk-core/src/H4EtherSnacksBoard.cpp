@@ -23,8 +23,8 @@ H4EtherSnacksBoard::H4EtherSnacksBoard(const string& name, bool addImu) : name(n
     });
 
     // Communication buffer configuration (RxPDO / TxPDO)
-    define_physical_buffer<buffer_out_cyclic_command_t>(SYNCHROS_OUT, 0x1060, 0x00010064); //TODO make sure these are right
-    define_physical_buffer<buffer_in_cyclic_status_t>(SYNCHROS_IN, 0x10f0, 0x00010020);
+    define_physical_buffer<buffer_out_cyclic_command_t>(SYNCHROS_OUT, 0x1100, 0x00010064); //TODO make sure these are right
+    define_physical_buffer<buffer_in_cyclic_status_t>(SYNCHROS_IN, 0x1400, 0x00010020);
 
     // Decide whether to use a distributed clock
     define_distributed_clock(false);
@@ -43,12 +43,12 @@ H4EtherSnacksBoard::H4EtherSnacksBoard(const string& name, bool addImu) : name(n
 }
 
 void H4EtherSnacksBoard::update_command_buffer() {
-    const auto buffer = this->output_buffer<buffer_out_cyclic_command_t>(0x1800);
+    const auto buffer = this->output_buffer<buffer_out_cyclic_command_t>(0x7000);
     buffer->status = 0;
 }
 
 void H4EtherSnacksBoard::unpack_status_buffer() {
-    const auto buffer = this->input_buffer<buffer_in_cyclic_status_t>(0x1c00);
+    const auto buffer = this->input_buffer<buffer_in_cyclic_status_t>(0x6000);
 
     abstractIMU.setPosition(0.0, 0.0, 0.0);
     abstractIMU.setQuaternion(0.0, 0.0, 0.0, 0.0);
