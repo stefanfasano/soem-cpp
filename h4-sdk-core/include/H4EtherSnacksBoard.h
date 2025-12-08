@@ -33,11 +33,11 @@ class H4EtherSnacksBoard : public ethercatcpp::SlaveDevice
     uint16_t MeasuredInputVoltage = 0;
     uint16_t MeasuredOutputVoltage = 0;
     uint16_t MeasuredCurrentLoad = 0;
-  } __attribute__((packed));
+  };
 
   struct [[gnu::packed]] buffer_out_cyclic_command_t {
     uint16_t status = 0;
-  } __attribute__((packed));
+  };
 
   static constexpr uint32_t VENDOR_ID = 0x00000603;
   static constexpr uint32_t PRODUCT_CODE = 0x42000000;

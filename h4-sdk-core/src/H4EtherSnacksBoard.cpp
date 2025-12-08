@@ -47,13 +47,13 @@ H4EtherSnacksBoard::H4EtherSnacksBoard(const string& name, bool addImu) : name(n
 }
 
 void H4EtherSnacksBoard::update_command_buffer() {
-    std::cout << "---attempting to update command buffer---"<< std::endl;
+    std::cout << "---attempting to update command buffer---" << std::endl;
     const auto buffer = this->output_buffer<buffer_out_cyclic_command_t>(0x1100);
     buffer->status = 0;
 }
 
 void H4EtherSnacksBoard::unpack_status_buffer() {
-    std::cout << "---attempting to uppack status buffer---"<< std::endl;
+    std::cout << "---attempting to uppack status buffer---" << std::endl;
     const auto buffer = this->input_buffer<buffer_in_cyclic_status_t>(0x1400);
 
     abstractIMU.setPosition(0.0, 0.0, 0.0);
