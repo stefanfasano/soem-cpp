@@ -3,36 +3,40 @@
 //
 
 #include "H4EtherSnacksBoard.h"
+#include <iostream>
 
 H4EtherSnacksBoard::H4EtherSnacksBoard(const string& name, bool addImu) : name(name), abstractIMU(name + "_imu")
 {
     set_id(name, VENDOR_ID, PRODUCT_CODE);
+
 
     configure_at_init( [this]()
     {
     // Link maps
     // Config Command PDO mapping (Rx PDO assign: 0x1c12)
     start_command_pdo_mapping<uint8_t>();
-    add_command_pdo_mapping<uint8_t>(RX_PDO_ID); //Assign IO Map at CoE index 0x1600 to Rx PDO in 0x1c12.
+    add_command_pdo_mapping<uint8_t>(0x1600); //Assign IO Map at CoE index 0x1600 to Rx PDO in 0x1c12.
     end_command_pdo_mapping<uint8_t>();
 
     // Config Status PDO mapping (Tx PDO assign: 0x1c13)
     start_status_pdo_mapping<uint8_t>();
-    add_status_pdo_mapping<uint8_t>(TX_PDO_ID);  //Assign IO Map at CoE index 0x1A00 to Tx PDO in 0x1c13.
+    add_status_pdo_mapping<uint8_t>(0x1a00);  //Assign IO Map at CoE index 0x1A00 to Tx PDO in 0x1c13.
     end_status_pdo_mapping<uint8_t>();
+
+    std::cout << "---finished configure at init---"<< std::endl;
     });
 
     // Communication buffer configuration (RxPDO / TxPDO)
     define_physical_buffer<buffer_out_cyclic_command_t>(SYNCHROS_OUT, 0x1100, 0x00010064); //TODO make sure these are right
     define_physical_buffer<buffer_in_cyclic_status_t>(SYNCHROS_IN, 0x1400, 0x00010020);
 
+    std::cout << "---defined physical buffers---"<< std::endl;
+
     // Decide whether to use a distributed clock
     define_distributed_clock(false);
 
-    add_init_step(
-   [this]() { update_command_buffer(); },
-   [this]() { unpack_status_buffer(); }
-   );
+    add_init_step( [this]() { update_command_buffer(); },
+		   [this]() { unpack_status_buffer(); });
 
     add_run_step(
         [this]() { update_command_buffer(); },
@@ -43,12 +47,14 @@ H4EtherSnacksBoard::H4EtherSnacksBoard(const string& name, bool addImu) : name(n
 }
 
 void H4EtherSnacksBoard::update_command_buffer() {
-    const auto buffer = this->output_buffer<buffer_out_cyclic_command_t>(0x7000);
+    std::cout << "---attempting to update command buffer---"<< std::endl;
+    const auto buffer = this->output_buffer<buffer_out_cyclic_command_t>(0x1100);
     buffer->status = 0;
 }
 
 void H4EtherSnacksBoard::unpack_status_buffer() {
-    const auto buffer = this->input_buffer<buffer_in_cyclic_status_t>(0x6000);
+    std::cout << "---attempting to uppack status buffer---"<< std::endl;
+    const auto buffer = this->input_buffer<buffer_in_cyclic_status_t>(0x1400);
 
     abstractIMU.setPosition(0.0, 0.0, 0.0);
     abstractIMU.setQuaternion(0.0, 0.0, 0.0, 0.0);

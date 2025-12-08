@@ -29,7 +29,7 @@ class H4EtherSnacksBoard : public ethercatcpp::SlaveDevice
     uint16_t EthersnacksCycleCounter = 0;
     uint16_t LastEthercatCycleTime = 0;
     uint16_t EthercatLinkStatus = 0;
-    uint16_t LastEtherSnacksCycleTime = 0;
+    uint16_t LastGripperCycleTime = 0;
     uint16_t MeasuredInputVoltage = 0;
     uint16_t MeasuredOutputVoltage = 0;
     uint16_t MeasuredCurrentLoad = 0;
