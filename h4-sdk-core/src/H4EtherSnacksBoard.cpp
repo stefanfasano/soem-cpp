@@ -3,12 +3,25 @@
 //
 
 #include "H4EtherSnacksBoard.h"
+#include "H4EtherSnacksBoard.h"
+#include "H4EtherSnacksBoard.h"
 #include <iostream>
 
 H4EtherSnacksBoard::H4EtherSnacksBoard(const string& name, bool addImu) : name(name), abstractIMU(name + "_imu")
 {
     set_id(name, VENDOR_ID, PRODUCT_CODE);
 
+    std::cout << "---size of buffer out:---"<< std::endl;
+    std::cout << sizeof(buffer_out_cyclic_command_t)<< std::endl;
+
+    std::cout << "---align of buffer out:---"<< std::endl;
+    std::cout << alignof(buffer_out_cyclic_command_t)<< std::endl;
+
+    std::cout << "---size of buffer in:---"<< std::endl;
+    std::cout << sizeof(buffer_in_cyclic_status_t)<< std::endl;
+
+    std::cout << "---align of buffer in:---"<< std::endl;
+    std::cout << alignof(buffer_in_cyclic_status_t)<< std::endl;
 
     configure_at_init( [this]()
     {
