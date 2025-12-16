@@ -19,11 +19,16 @@ add_library(h4SDKCore SHARED
         include/AbstractMotorController.h
         include/H4EtherSnacksBoard.h
         include/H4IMU.h
+        include/Master.h
         src/AbstractIMU.cpp
         src/AbstractMotorController.cpp
         src/H4EtherSnacksBoard.cpp
         src/H4IMU.cpp
+        src/Master.cpp
 )
+
+target_link_libraries(h4SDKCore soem)
+
 #bind_PID_Components(LIB h4SDKCore COMPONENTS ethercatcpp-core/ethercatcpp-core)
 
 ### creating an executable (h4IMUTestbed)
@@ -31,7 +36,8 @@ add_executable(h4IMUTestbed apps/H4IMUTestbed.cpp)
 target_link_libraries(h4IMUTestbed soem)
 
 ### creating an executable (h4IMUTestbed)
-add_executable(h4EtherSnacksTestbed apps/H4EtherSnacksTestbed.cpp)
+add_executable(h4EtherSnacksTestbed apps/H4EtherSnacksTestbed.cpp
+        include/Master.h)
 target_link_libraries(h4EtherSnacksTestbed soem)
 
 install(TARGETS h4SDKCore h4IMUTestbed h4EtherSnacksTestbed
