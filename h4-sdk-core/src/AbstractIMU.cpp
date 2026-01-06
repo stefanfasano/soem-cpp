@@ -4,22 +4,22 @@
 
 #include "AbstractIMU.h"
 #include <array>
+#include <iostream>
 #include <string>
-#include "pid/log.h"
 
 AbstractIMU::AbstractIMU(const std::string& name) : name_(name), position(), quaternion(), angularVelocity(), linearAcceleration() {}
 
 void AbstractIMU::update() {  }
 
 void AbstractIMU::print() {
-  pid_log << "---------------------------------------------------------------------------------------------" << pid::endl;
-  pid_log << "PRINTING IMU STATE: " << pid::endl;
-  pid_log << "Position x,y,z: " << getPosition()[0] << getPosition()[1] << getPosition()[2] << pid::endl;
-  pid_log << "Quaternion x,y,z: " << getQuaternion()[0] << getQuaternion()[1] << getQuaternion()[2] << pid::endl;
-  pid_log << "Gyro x,y,z: " << getAngularVelocity()[0] << getAngularVelocity()[1] << getAngularVelocity()[2] << pid::endl;
-  pid_log << "Accel x,y,z: " << getLinearAcceleration()[0] << getLinearAcceleration()[1] << getLinearAcceleration()[2] << pid::endl;
-  pid_log << "IMU temp: " << getIMUTemp() << pid::endl;
-  pid_log << "---------------------------------------------------------------------------------------------" << pid::endl;
+  std::cout << "---------------------------------------------------------------------------------------------" << std::endl;
+  std::cout << "PRINTING IMU STATE: " << std::endl;
+  std::cout << "Position x,y,z: " << getPosition()[0] << getPosition()[1] << getPosition()[2] << std::endl;
+  std::cout << "Quaternion x,y,z: " << getQuaternion()[0] << getQuaternion()[1] << getQuaternion()[2] << std::endl;
+  std::cout << "Gyro x,y,z: " << getAngularVelocity()[0] << getAngularVelocity()[1] << getAngularVelocity()[2] << std::endl;
+  std::cout << "Accel x,y,z: " << getLinearAcceleration()[0] << getLinearAcceleration()[1] << getLinearAcceleration()[2] << std::endl;
+  std::cout << "IMU temp: " << getIMUTemp() << std::endl;
+  std::cout << "---------------------------------------------------------------------------------------------" << std::endl;
 }
 
 void AbstractIMU::setPosition(const float& x, const float& y, const float& z)

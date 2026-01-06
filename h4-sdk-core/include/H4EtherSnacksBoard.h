@@ -5,39 +5,54 @@
 #ifndef H4_SDK_WARMUP_H4_ETHERSNACKS_BOARD_H
 #define H4_SDK_WARMUP_H4_ETHERSNACKS_BOARD_H
 
+#include <cstdint>
+
 #include "AbstractIMU.h"
 #include <numbers>
 #include <string>
-#include <ethercatcpp/slave_device.h>
+
+#include "Master.h"
+#include "osal_defs.h"
 
 using namespace std;
 
 #define RX_PDO_ID 0x1600
 #define TX_PDO_ID 0x1a00
 
-class H4EtherSnacksBoard : public ethercatcpp::SlaveDevice
+class H4EtherSnacksBoard
 {
-  struct [[gnu::packed]]buffer_in_cyclic_status_t {
-    int16_t accelX = 0;
-    int16_t accelY = 0;
-    int16_t accelZ = 0;
-    int16_t gyroX = 0;
-    int16_t gyroY = 0;
-    int16_t gyroZ = 0;
-    uint16_t imuTemp = 0;
-    uint16_t sensorTemp = 0;
-    uint16_t EthersnacksCycleCounter = 0;
-    uint16_t LastEthercatCycleTime = 0;
-    uint16_t EthercatLinkStatus = 0;
-    uint16_t LastGripperCycleTime = 0;
-    uint16_t MeasuredInputVoltage = 0;
-    uint16_t MeasuredOutputVoltage = 0;
-    uint16_t MeasuredCurrentLoad = 0;
-  };
+  OSAL_PACKED_BEGIN
+   struct OSAL_PACKED ProcessData {
+    struct
+    {
+      int16_t accelX = 0;
+      int16_t accelY = 0;
+      int16_t accelZ = 0;
+      int16_t gyroX = 0;
+      int16_t gyroY = 0;
+      int16_t gyroZ = 0;
+      uint16_t imuTemp = 0;
+      uint16_t sensorTemp = 0;
+      uint16_t EthersnacksCycleCounter = 0;
+      uint16_t LastEthercatCycleTime = 0;
+      uint16_t EthercatLinkStatus = 0;
+      uint16_t LastGripperCycleTime = 0;
+      uint16_t MeasuredInputVoltage = 0;
+      uint16_t MeasuredOutputVoltage = 0;
+      uint16_t MeasuredCurrentLoad = 0;
+    } inputs;
 
-  struct [[gnu::packed]] buffer_out_cyclic_command_t {
-    uint16_t status = 0;
-  };
+    struct
+    {
+      uint16_t status = 0;
+    } outputs;
+  }
+  OSAL_PACKED_END;
+
+  volatile ProcessData* const pd = reinterpret_cast<volatile ProcessData*>(Master::IOmap);
+
+  // Safety check: EtherCAT layout must be exact
+  // static_assert(sizeof(ProcessData) == 16, "EtherCAT ProcessData layout mismatch");
 
   static constexpr uint32_t VENDOR_ID = 0x00000603;
   static constexpr uint32_t PRODUCT_CODE = 0x42000000;
@@ -55,9 +70,9 @@ class H4EtherSnacksBoard : public ethercatcpp::SlaveDevice
   public:
   H4EtherSnacksBoard(const string& name, bool addIMU);
 
-  void update_command_buffer();
+  // void update_command_buffer();
 
-  void unpack_status_buffer();
+  void read();
 
   virtual void print();
 
