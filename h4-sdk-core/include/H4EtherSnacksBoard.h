@@ -13,16 +13,18 @@
 
 #include "Master.h"
 #include "osal_defs.h"
+#include "Slove.h"
 
 using namespace std;
 
 #define RX_PDO_ID 0x1600
 #define TX_PDO_ID 0x1a00
 
-class H4EtherSnacksBoard
+class H4EtherSnacksBoard : public Slove
 {
   OSAL_PACKED_BEGIN
-   struct OSAL_PACKED ProcessData {
+   struct OSAL_PACKED ProcessData
+  {
     struct
     {
       int16_t accelX = 0;
@@ -46,6 +48,7 @@ class H4EtherSnacksBoard
     {
       uint16_t status = 0;
     } outputs;
+
   }
   OSAL_PACKED_END;
 
@@ -71,6 +74,7 @@ class H4EtherSnacksBoard
   H4EtherSnacksBoard(const string& name, bool addIMU);
 
   // void update_command_buffer();
+  void update() override;
 
   void read();
 
@@ -80,7 +84,7 @@ class H4EtherSnacksBoard
 
   virtual string get_name();
 
-  virtual ~H4EtherSnacksBoard() = default;
+  ~H4EtherSnacksBoard() override = default;
 };
 
 

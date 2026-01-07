@@ -18,12 +18,11 @@ add_library(h4SDKCore SHARED
         include/AbstractIMU.h
         include/AbstractMotorController.h
         include/H4EtherSnacksBoard.h
-        include/H4IMU.h
         include/Master.h
+        include/Slove.h
         src/AbstractIMU.cpp
         src/AbstractMotorController.cpp
         src/H4EtherSnacksBoard.cpp
-        src/H4IMU.cpp
         src/Master.cpp
 )
 
@@ -32,15 +31,14 @@ target_link_libraries(h4SDKCore soem)
 #bind_PID_Components(LIB h4SDKCore COMPONENTS ethercatcpp-core/ethercatcpp-core)
 
 ### creating an executable (h4IMUTestbed)
-add_executable(h4IMUTestbed apps/H4IMUTestbed.cpp)
-target_link_libraries(h4IMUTestbed soem)
+#add_executable(h4IMUTestbed apps/H4IMUTestbed.cpp)
+#target_link_libraries(h4IMUTestbed soem)
 
 ### creating an executable (h4IMUTestbed)
-add_executable(h4EtherSnacksTestbed apps/H4EtherSnacksTestbed.cpp
-        include/Master.h)
-target_link_libraries(h4EtherSnacksTestbed soem)
+add_executable(h4EtherSnacksTestbed apps/H4EtherSnacksTestbed.cpp)
+target_link_libraries(h4EtherSnacksTestbed soem h4SDKCore)
 
-install(TARGETS h4SDKCore h4IMUTestbed h4EtherSnacksTestbed
+install(TARGETS h4SDKCore h4EtherSnacksTestbed
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)

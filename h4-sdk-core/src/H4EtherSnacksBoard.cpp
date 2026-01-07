@@ -7,9 +7,13 @@
 #include "H4EtherSnacksBoard.h"
 #include <iostream>
 
-H4EtherSnacksBoard::H4EtherSnacksBoard(const string& name, bool addImu) : name(name), abstractIMU(name + "_imu")
-{
+H4EtherSnacksBoard::H4EtherSnacksBoard(const string& name, bool addImu) : Slove(), name(name), abstractIMU(name + "_imu") {
+}
 
+void H4EtherSnacksBoard::update()
+{
+    read();
+    print();
 }
 
 void H4EtherSnacksBoard::read() {

@@ -9,9 +9,13 @@
 
 AbstractIMU::AbstractIMU(const std::string& name) : name_(name), position(), quaternion(), angularVelocity(), linearAcceleration() {}
 
-void AbstractIMU::update() {  }
+void AbstractIMU::update()
+{
 
-void AbstractIMU::print() {
+}
+
+void AbstractIMU::print()
+{
   std::cout << "---------------------------------------------------------------------------------------------" << std::endl;
   std::cout << "PRINTING IMU STATE: " << std::endl;
   std::cout << "Position x,y,z: " << getPosition()[0] << getPosition()[1] << getPosition()[2] << std::endl;

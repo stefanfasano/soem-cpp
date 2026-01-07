@@ -5,16 +5,15 @@
 #include <chrono>
 #include <iostream>
 #include "H4EtherSnacksBoard.h"
-#include "H4IMU.h"
 
-using std::chrono_literals::operator ""ms;
+// using std::chrono_literals::operator ""ms;
 
 int main(int argc, char* argv[]) {
     //auto memory_locker = pid::make_current_thread_real_time();
     std::cout << "staring testbed" << std::endl;;
 
     // Master creation
-    Master master("enp89s0");
+    Master master("enp89s0", H4EtherSnacksBoard("testBoard", true));
 
 	/* initialize master */
 	master.initialize();

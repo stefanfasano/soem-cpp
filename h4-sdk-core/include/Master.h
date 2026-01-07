@@ -7,7 +7,9 @@
 
 #include <cstdint>
 #include <string>
+#include <array>
 
+#include "Slove.h"
 #include "soem/soem.h"
 
 static int currentgroup = 0;
@@ -37,7 +39,9 @@ class Master {
     const std::string ifName;
     static ecx_contextt ctx;
 
-    explicit Master(const std::string& ifName);
+    Slove testSlove;
+
+    explicit Master(const std::string& ifName, const Slove& testSlove);
 
     void initialize() const;
 

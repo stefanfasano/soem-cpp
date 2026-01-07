@@ -7,7 +7,7 @@
 #include <cinttypes>
 #include <cstring>
 
-Master::Master(const std::string& ifName) : ifName(ifName)
+Master::Master(const std::string& ifName, const Slove& testSlove) : ifName(ifName), testSlove(testSlove)
 {
 }
 
@@ -228,7 +228,10 @@ void *Master::ecatthread() // TODO make sure this is proper way to do this
          cycle++;
          wkc = ecx_receive_processdata(&ctx, EC_TIMEOUTRET);
          if (wkc != expectedWKC)
+         {
             dowkccheck++;
+            printf("WARNING : WKC mismatch, expected %d, received %d, total consecutive mm %d\n", expectedWKC, wkc, dowkccheck);
+         }
          else
             dowkccheck = 0;
 
@@ -237,6 +240,9 @@ void *Master::ecatthread() // TODO make sure this is proper way to do this
             /* calculate toff to get linux time and DC synced */
             ec_sync(ctx.DCtime, cycletime, &toff);
          }
+
+         testSlove.update();
+
          ecx_mbxhandler(&ctx, 0, 4);
          ecx_send_processdata(&ctx);
       }
