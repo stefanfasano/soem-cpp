@@ -7,6 +7,21 @@
 #include <cinttypes>
 #include <cstring>
 
+// Static member definitions
+std::uint8_t Master::IOmap[IOMAP_SIZE] = {};
+OSAL_THREAD_HANDLE Master::threadrt, Master::thread1;
+
+int Master::expectedWKC = 0;
+int Master::wkc = 0;
+int Master::mappingdone = 0;
+int Master::dorun = 0;
+int Master::inOP = 0;
+int Master::dowkccheck = 0;
+
+int64 Master::timeerror = 0;
+
+ecx_contextt Master::ctx = {};
+
 Master::Master(const std::string& ifName, const Slove& testSlove) : ifName(ifName), testSlove(testSlove)
 {
 }
