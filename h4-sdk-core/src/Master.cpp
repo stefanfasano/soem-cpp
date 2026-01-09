@@ -31,6 +31,7 @@ void Master::initialize() const
    printf("EtherCAT Startup\n");
 
    ctx.packedMode = true;
+   ctx.overlappedMode = true;
 
    // Initialize EtherCAT and NIC
    printf("Initializing EtherCAT and NIC\n");
