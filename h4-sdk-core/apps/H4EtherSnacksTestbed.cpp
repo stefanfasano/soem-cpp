@@ -15,14 +15,14 @@ int main(int argc, char* argv[]) {
     // Master creation
     Master master("enp89s0", H4EtherSnacksBoard("testBoard", true));
 
-	/* initialize master */
-	master.initialize();
-
 	/* create RT EtherCAT thread */
 	osal_thread_create_rt(&Master::threadrt, 128000, master.ecatthread(), NULL);
 
 	/* create thread to handle slave error handling in OP */
 	osal_thread_create(&Master::thread1, 128000, master.ecatcheck(), NULL);
+
+	/* initialize master */
+	master.initialize();
 
  //    // Adding network interface (replace by adequet id)
  //    master.set_primary_interface("enp89s0");

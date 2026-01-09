@@ -33,27 +33,27 @@ void Master::initialize() const
    ctx.packedMode = true;
 
    // Initialize EtherCAT and NIC
-   printf("Initializing EtherCAT and NIC");
+   printf("Initializing EtherCAT and NIC\n");
    const int rv = ecx_init(&ctx, ifName.c_str());
    const bool configurationSuccess = rv > 0;
    if (rv <= 0)
-      printf("ERROR: Error initializing EtherCAT and NIC");
+      printf("ERROR: Error initializing EtherCAT and NIC\n");
 
    if (configurationSuccess)
    {
       // Configure network
-      printf("Configuring network");
+      printf("Configuring network\n");
       if (ecx_config_init(&ctx) <= 0)
-         printf("ERROR: Error configuring network");
+         printf("ERROR: Error configuring network\n");
 
       if (ctx.slavecount > 0)
       {
          // Mapping slaves onto IOmap
-         printf("Mapping slaves onto IOmap");
+         printf("Mapping slaves onto IOmap\n");
          ec_groupt *group = &ctx.grouplist[0];
          const int ioMapSize = ecx_config_map_group(&ctx, IOmap, 0);
          if (ioMapSize > IOMAP_SIZE)
-            printf("ERROR: Error mapping slaves onto IOmap. IOmap size is overflowing supplied buffer");
+            printf("ERROR: Error mapping slaves onto IOmap. IOmap size is overflowing supplied buffer\n");
 
          // Calculate working counter
          expectedWKC = calculateExpectedWorkingCounter();//group->outputsWKC * 2) + group->inputsWKC;
@@ -74,7 +74,7 @@ void Master::initialize() const
          ecx_statecheck(&ctx, 0, EC_STATE_SAFE_OP, EC_TIMEOUTSTATE * 4);
          if (ctx.slavelist[0].state != EC_STATE_SAFE_OP)
          {
-            printf("WARNING: 1 or more slaves not in SAFE_OP after mapping");
+            printf("WARNING: 1 or more slaves not in SAFE_OP after mapping\n");
 
             // Reading the states of all slaves can refresh the states
             ecx_readstate(&ctx);
@@ -112,11 +112,11 @@ void Master::initialize() const
          osal_usleep(1000000);
 
          // Check I/O before entering OP state
-         //ecx_send_processdata(&ctx);
-         //ecx_receive_processdata(&ctx, EC_TIMEOUTRET);
+         ecx_send_processdata(&ctx);
+         ecx_receive_processdata(&ctx, EC_TIMEOUTRET);
 
          /* Go to operational state */
-         printf("Transitioning slaves to OP state");
+         printf("Transitioning slaves to OP state\n");
          int checkIterations = 200;
          ctx.slavelist[0].state = EC_STATE_OPERATIONAL;
          ecx_writestate(&ctx, 0);
@@ -128,7 +128,7 @@ void Master::initialize() const
          // If slaves are not in OP, print out details
          if (ctx.slavelist[0].state != EC_STATE_OPERATIONAL)
          {
-            printf("WARNING: 1 or more slaves not in OP");
+            printf("WARNING: 1 or more slaves not in OP\n");
 
             // Reading the states of all slaves can refresh the states
             ecx_readstate(&ctx);
@@ -232,14 +232,18 @@ void *Master::ecatthread() // TODO make sure this is proper way to do this
    ht = (ts.tv_nsec / 1000000) + 1; /* round to nearest ms */
    ts.tv_nsec = ht * 1000000;
    ecx_send_processdata(&ctx);
+
+   printf("Starting EtherCAT RT thread \n");
    while (1)
    {
+      printf("Currently in EtherCAT RT Loop \n");
       /* calculate next cycle start */
       add_time_ns(&ts, cycletime + toff);
       /* wait to cycle start */
       osal_monotonic_sleep(&ts);
       if (dorun > 0)
       {
+         printf("Currently doing EtherCAT RT loop run \n");
          cycle++;
          wkc = ecx_receive_processdata(&ctx, EC_TIMEOUTRET);
          if (wkc != expectedWKC)
@@ -256,6 +260,7 @@ void *Master::ecatthread() // TODO make sure this is proper way to do this
             ec_sync(ctx.DCtime, cycletime, &toff);
          }
 
+         printf("Currently updating slave \n");
          testSlove.update();
 
          ecx_mbxhandler(&ctx, 0, 4);
@@ -267,6 +272,8 @@ void *Master::ecatthread() // TODO make sure this is proper way to do this
 /* Slave error handler */
 void *Master::ecatcheck() // TODO make sure this is proper way to do this
 {
+   printf("Starting EtherCAT check thread \n");
+
    int slaveix;
 
    while (1)
