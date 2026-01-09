@@ -39,9 +39,9 @@ class Master {
     const std::string ifName;
     static ecx_contextt ctx;
 
-    Slove testSlove;
+    Slove& testSlove;
 
-    explicit Master(const std::string& ifName, const Slove& testSlove);
+    explicit Master(const std::string& ifName, Slove& testSlove);
 
     void initialize() const;
 

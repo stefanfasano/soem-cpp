@@ -11,7 +11,7 @@ class Slove
 
     Slove() = default;
 
-    virtual void update() {}
+    virtual void update() = 0;
 
     virtual ~Slove() = default;
 };

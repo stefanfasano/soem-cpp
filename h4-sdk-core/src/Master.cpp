@@ -22,7 +22,7 @@ int64 Master::timeerror = 0;
 
 ecx_contextt Master::ctx = {};
 
-Master::Master(const std::string& ifName, const Slove& testSlove) : ifName(ifName), testSlove(testSlove)
+Master::Master(const std::string& ifName, Slove& testSlove) : ifName(ifName), testSlove(testSlove)
 {
 }
 
@@ -158,8 +158,8 @@ void Master::initialize() const
             /* acyclic loop 5000 x 20ms = 100s */
             for (int i = 0; i < 5000; i++)
             {
-               //ecx_send_processdata(&ctx);
-               //wkc = ecx_receive_processdata(&ctx, EC_TIMEOUTRET);
+               ecx_send_processdata(&ctx);
+               wkc = ecx_receive_processdata(&ctx, EC_TIMEOUTRET);
 
                printf("Processdata cycle %5d , Wck %3d, DCtime %12" PRId64 ", dt %8" PRId64 ", O:",
                       cycle,
@@ -198,20 +198,20 @@ void Master::initialize() const
             }
             printf("\n");
             dorun = 0;
-            inOP = FALSE;
+            //inOP = FALSE;
          }
 
          /* Go to SAFE_OP */
-         printf("EtherCAT to SAFE_OP\n");
-         ctx.slavelist[0].state = EC_STATE_SAFE_OP;
-         ecx_writestate(&ctx, 0);
-         ecx_statecheck(&ctx, 0, EC_STATE_SAFE_OP, EC_TIMEOUTSTATE);
+         //printf("EtherCAT to SAFE_OP\n");
+         //ctx.slavelist[0].state = EC_STATE_SAFE_OP;
+         //ecx_writestate(&ctx, 0);
+         //ecx_statecheck(&ctx, 0, EC_STATE_SAFE_OP, EC_TIMEOUTSTATE);
 
          /* Go to INIT state */
-         printf("EtherCAT to INIT\n");
-         ctx.slavelist[0].state = EC_STATE_INIT;
-         ecx_writestate(&ctx, 0);
-         ecx_statecheck(&ctx, 0, EC_STATE_INIT, EC_TIMEOUTSTATE);
+         //printf("EtherCAT to INIT\n");
+         //ctx.slavelist[0].state = EC_STATE_INIT;
+         //ecx_writestate(&ctx, 0);
+         //ecx_statecheck(&ctx, 0, EC_STATE_INIT, EC_TIMEOUTSTATE);
       }
    }
 }
@@ -223,7 +223,7 @@ void *Master::ecatthread() // TODO make sure this is proper way to do this
    int ht;
    static int64_t toff = 0;
 
-   dorun = 0;
+   dorun = 1;
    while (!mappingdone)
    {
       osal_usleep(100);

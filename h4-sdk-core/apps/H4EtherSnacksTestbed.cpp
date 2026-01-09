@@ -13,7 +13,9 @@ int main(int argc, char* argv[]) {
     std::cout << "staring testbed" << std::endl;;
 
     // Master creation
-    Master master("enp89s0", H4EtherSnacksBoard("testBoard", true));
+    Master master("enp89s0", &H4EtherSnacksBoard("testBoard", true));
+
+        master.initialize();
 
 	/* create RT EtherCAT thread */
 	osal_thread_create_rt(&Master::threadrt, 128000, master.ecatthread(), NULL);
@@ -22,7 +24,7 @@ int main(int argc, char* argv[]) {
 	osal_thread_create(&Master::thread1, 128000, master.ecatcheck(), NULL);
 
 	/* initialize master */
-	master.initialize();
+	//master.initialize();
 
  //    // Adding network interface (replace by adequet id)
  //    master.set_primary_interface("enp89s0");
