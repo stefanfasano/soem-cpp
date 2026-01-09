@@ -12,8 +12,10 @@ int main(int argc, char* argv[]) {
     //auto memory_locker = pid::make_current_thread_real_time();
     std::cout << "staring testbed" << std::endl;;
 
+	H4EtherSnacksBoard h4EtherSnacksBoard("testBoard", true);
+
     // Master creation
-    Master master("enp89s0", &H4EtherSnacksBoard("testBoard", true));
+    Master master("enp89s0", h4EtherSnacksBoard);
 
         master.initialize();
 
