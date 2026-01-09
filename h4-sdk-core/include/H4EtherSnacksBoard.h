@@ -23,8 +23,13 @@ using namespace std;
 class H4EtherSnacksBoard : public Slove
 {
   OSAL_PACKED_BEGIN
-   struct OSAL_PACKED ProcessData
+  struct OSAL_PACKED ProcessData
   {
+    struct OSAL_PACKED
+    {
+      uint16_t status = 0;
+    } outputs;
+
     struct OSAL_PACKED
     {
       int16_t accelX = 0;
@@ -43,12 +48,6 @@ class H4EtherSnacksBoard : public Slove
       uint16_t MeasuredOutputVoltage = 0;
       uint16_t MeasuredCurrentLoad = 0;
     } inputs;
-
-    struct OSAL_PACKED
-    {
-      uint16_t status = 0;
-    } outputs;
-
   }
   OSAL_PACKED_END;
 
