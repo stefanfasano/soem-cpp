@@ -156,7 +156,7 @@ void Master::initialize() const
             inOP = TRUE;
 
             /* acyclic loop 5000 x 20ms = 100s */
-            for (int i = 0; i < 5000; i++)
+            for (int i = 0; i < 500; i++)
             {
                ecx_send_processdata(&ctx);
                wkc = ecx_receive_processdata(&ctx, EC_TIMEOUTRET);
