@@ -25,7 +25,7 @@ class H4EtherSnacksBoard : public Slove
   OSAL_PACKED_BEGIN
    struct OSAL_PACKED ProcessData
   {
-    struct
+    struct OSAL_PACKED
     {
       int16_t accelX = 0;
       int16_t accelY = 0;
@@ -44,7 +44,7 @@ class H4EtherSnacksBoard : public Slove
       uint16_t MeasuredCurrentLoad = 0;
     } inputs;
 
-    struct
+    struct OSAL_PACKED
     {
       uint16_t status = 0;
     } outputs;
@@ -62,10 +62,10 @@ class H4EtherSnacksBoard : public Slove
 
   const float GRAVITY = 9.80665;
   const float RAW_ACCEL_TO_G = 0.000244;
-  const float RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC = 1.0;//RAW_ACCEL_TO_G * GRAVITY;
-  const float RAW_GYRO_TO_RAD_PER_SEC = 1.0;//(2000.0 * (std::numbers::pi * 2.0) / 360.0) / 65535.0;
-  const float RAW_TEMP_TO_CELCIUS_SCALAR = 1.0;//1.0 / 132.48;
-  const float RAW_TEMP_TO_CELCIUS_CONSTANT = 1.0;//25.0;
+  const float RAW_ACCEL_TO_RAD_PER_SEC_PER_SEC = RAW_ACCEL_TO_G * GRAVITY;
+  const float RAW_GYRO_TO_RAD_PER_SEC = (2000.0 * (std::numbers::pi * 2.0) / 360.0) / 65535.0;
+  const float RAW_TEMP_TO_CELCIUS_SCALAR = 1.0 / 132.48;
+  const float RAW_TEMP_TO_CELCIUS_CONSTANT = 25.0;
 
   string name;
   AbstractIMU abstractIMU;
