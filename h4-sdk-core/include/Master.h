@@ -8,6 +8,9 @@
 #include <cstdint>
 #include <string>
 #include <array>
+#include <list>
+#include <memory>
+#include <vector>
 
 #include "Slove.h"
 #include "soem/soem.h"
@@ -39,11 +42,13 @@ class Master {
     const std::string ifName;
     static ecx_contextt ctx;
 
-    Slove& testSlove;
+    std::vector<std::unique_ptr<Slove>> sloves ;
 
-    explicit Master(const std::string& ifName, Slove& testSlove);
+    explicit Master(const std::string& ifName);
 
     void initialize() const;
+
+    void addSlove(std::unique_ptr<Slove> slove);
 
     void *ecatthread();
 

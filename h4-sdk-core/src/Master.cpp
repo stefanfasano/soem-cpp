@@ -22,9 +22,7 @@ int64 Master::timeerror = 0;
 
 ecx_contextt Master::ctx = {};
 
-Master::Master(const std::string& ifName, Slove& testSlove) : ifName(ifName), testSlove(testSlove)
-{
-}
+Master::Master(const std::string& ifName) : ifName(ifName){}
 
 void Master::initialize() const
 {
@@ -262,7 +260,8 @@ void *Master::ecatthread() // TODO make sure this is proper way to do this
          }
 
          printf("Currently updating slave \n");
-         testSlove.update();
+         for (long unsigned i = 0; i < sloves.size(); i++)
+            sloves[i]->update();
 
          ecx_mbxhandler(&ctx, 0, 4);
          ecx_send_processdata(&ctx);
@@ -387,7 +386,10 @@ int Master::getCurrentWorkingCounter()
    return wkc;
 }
 
-
+void Master::addSlove(std::unique_ptr<Slove> slove)
+{
+   sloves.push_back(std::move(slove));
+}
 
 //TODO
 // void checkAndPrintSlaveStates() {
