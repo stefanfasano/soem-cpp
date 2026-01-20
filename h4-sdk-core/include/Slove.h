@@ -7,11 +7,36 @@
 
 class Slove
 {
+    const int vendorID;
+    const int productCode;
+    const int alias;
+    const int position;
+
     public:
 
-    Slove() = default;
+    Slove(const int& vendorID, const int& productCode, const int& alias, const int& position) : vendorID(vendorID), productCode(productCode), alias(alias), position(position) {}
 
     virtual void update() = 0;
+
+    virtual int getVendorID()
+    {
+        return vendorID;
+    }
+
+    virtual int getProductCode()
+    {
+        return productCode;
+    }
+
+    virtual int getALias()
+    {
+        return alias;
+    }
+
+    virtual int getPosition()
+    {
+        return position;
+    }
 
     virtual ~Slove() = default;
 };

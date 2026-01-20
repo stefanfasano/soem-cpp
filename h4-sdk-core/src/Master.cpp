@@ -6,9 +6,10 @@
 
 #include <cinttypes>
 #include <cstring>
+#include <iostream>
 
 // Static member definitions
-std::uint8_t Master::IOmap[IOMAP_SIZE] = {};
+// std::uint8_t Master::IOmap[DEFAULT_IOMAP_SIZE] = {};
 OSAL_THREAD_HANDLE Master::threadrt, Master::thread1;
 
 int Master::expectedWKC = 0;
@@ -47,18 +48,84 @@ void Master::initialize() const
 
       if (ctx.slavecount > 0)
       {
-         // Mapping slaves onto IOmap
+         // A bunch of shit
+         int previousAlias = 0;
+         int previousPosition = -1;
+         int processDataSize = 0;
+
+         for (int i = 0; i < ctx.slavecount; i++)
+         {
+            ec_slavet ec_slave = ctx.slavelist[i + 1];
+
+            // Calculating the Process Data size for that slave
+            processDataSize += getProcessDataSize(ec_slave);
+
+            int alias{}, position{};
+            if(ec_slave.aliasadr == 0 || ec_slave.aliasadr == previousAlias)
+            {
+               alias = previousAlias;
+               position = previousPosition + 1;
+            }
+            else
+            {
+               alias = ec_slave.aliasadr;
+               position = 0;
+            }
+
+            Slove* registeredSlove = getRegisteredSlove(alias, position);
+            try
+            {
+               if (registeredSlove != nullptr)
+               {
+                  if (registeredSlove->getVendorID() != ec_slave.eep_man || registeredSlove->getProductCode() != ec_slave.eep_id)
+                  {
+                     throw std::runtime_error("Invalid slave configuration for slave " + std::to_string(alias) + ":" + std::to_string(position) +
+                                              ". Invalid Vendor ID and/or Product Code");
+                  }
+
+                  registeredSlove.configure(this, context, port, ec_slave, i + 1, enableDC, cycleTimeInNs);
+                  // slaveMap[i] = slave;
+               }
+               else
+               {
+                  registeredSlove = new UnconfiguredSlave(ec_slave.getName(), (int) ec_slave.getEep_man(), (int) ec_slave.getEep_id(), alias, position);
+                  registeredSlove.configure(this, getContext(), port, ec_slave, i + 1, false, cycleTimeInNs);
+
+                  std::string slaveNotFoundWarning = "Slave " + std::to_string(alias) + ":" + std::to_string(position) + " not found. No matching alias/position match on EtherCAT bus";
+                  throw slaveNotFoundWarning;
+                  // slaveMap[i] = slave;
+                  // etherCATStatusCallback.notifyUnconfiguredSlave(slaveMap[i]);
+                  // unconfiguredSlaves.add(slave);
+               }
+            }
+            catch (const std::exception &e)
+            {
+               std::cerr << e.what() << std::endl; //TODO do we need to exit/terminate here?
+            }
+
+
+            previousAlias = alias;
+            previousPosition = position;
+         }
+
+         // Make IOMAP and Map slaves onto it
          printf("Mapping slaves onto IOmap\n");
-         ec_groupt *group = &ctx.grouplist[0];
-         const int ioMapSize = ecx_config_map_group(&ctx, IOmap, 0);
-         if (ioMapSize > IOMAP_SIZE)
-            printf("ERROR: Error mapping slaves onto IOmap. IOmap size is overflowing supplied buffer\n");
+         if (processDataSize < DEFAULT_IOMAP_SIZE)
+            processDataSize = DEFAULT_IOMAP_SIZE;
+
+         const std::size_t ioMapSize = processDataSize;
+         std::vector<std::byte> IOMap{ioMapSize};
+
+         const int measuredIOMapSize = ecx_config_map_group(&ctx, &IOMap, 0);
+         if (measuredIOMapSize > ioMapSize)
+            printf("ERROR: Error mapping slaves onto IOmap. IOmap size is overflowing supplied buffer (as calculated by process data size)\n");
 
          // Calculate working counter
          expectedWKC = calculateExpectedWorkingCounter();//group->outputsWKC * 2) + group->inputsWKC;
          printf("%d slaves found and configured.\n", ctx.slavecount);
          printf("%d expected working counter.\n", expectedWKC);
 
+         ec_groupt *group = &ctx.grouplist[0];
          printf("segments : %d : %d %d %d %d\n",
                 group->nsegments,
                 group->IOsegment[0],
@@ -112,7 +179,7 @@ void Master::initialize() const
 
          // Check I/O before entering OP state
          ecx_send_processdata(&ctx);
-         ecx_receive_processdata(&ctx, EC_TIMEOUTRET);
+         wkc = ecx_receive_processdata(&ctx, EC_TIMEOUTRET);
 
          /* Go to operational state */
          printf("Transitioning slaves to OP state\n");
@@ -260,8 +327,8 @@ void *Master::ecatthread() // TODO make sure this is proper way to do this
          }
 
          printf("Currently updating slave \n");
-         for (long unsigned i = 0; i < sloves.size(); i++)
-            sloves[i]->update();
+         for (long unsigned i = 0; i < registeredSloves.size(); i++)
+            registeredSloves[i]->update();
 
          ecx_mbxhandler(&ctx, 0, 4);
          ecx_send_processdata(&ctx);
@@ -375,6 +442,53 @@ void Master::add_time_ns(ec_timet *ts, int64 addtime)
    osal_timespecadd(ts, &addts, ts);
 }
 
+int Master::getProcessDataSize(const ec_slavet& ec_slave) const
+{
+   int size(0);
+
+   for (int nSM = 0; nSM < EC_MAXSM; nSM++)
+   {
+      ec_smt sm = ec_slave.SM[nSM];
+      if (sm.StartAddr > 0)
+      {
+         if (ec_slave.SMtype[nSM] == 3 || ec_slave.SMtype[nSM] == 4)
+         {
+            size += sm.SMlength;
+         }
+      }
+   }
+   return size;
+}
+
+Slove* Master::getRegisteredSlove(int alias, int position) const
+{
+   Slove* retSlove = nullptr;
+
+   for (size_t i = 0; i < registeredSloves.size(); i++)
+   {
+      Slove* slove = registeredSloves[i].get();
+
+      if (slove->getALias() == alias && slove->getPosition() == position)
+      {
+         try
+         {
+            if (retSlove == nullptr)
+               retSlove = slove;
+            else
+               throw std::runtime_error(
+                  "Cannot configure slave (alias = " + std::to_string(alias) + ", position = " + std::to_string(position) +
+                  "). Multiple slaves registered with this alias/position combo. Change the alias and/or address such that each slave is unique.");
+         }
+         catch (const std::exception &e)
+         {
+            std::cerr << e.what() << std::endl; //TODO do we need to exit/terminate here?
+         }
+      }
+   }
+
+   return retSlove;
+}
+
 int Master::calculateExpectedWorkingCounter()
 {
    ec_groupt *group = &ctx.grouplist[0];
@@ -386,9 +500,9 @@ int Master::getCurrentWorkingCounter()
    return wkc;
 }
 
-void Master::addSlove(std::unique_ptr<Slove> slove)
+void Master::registerSlove(std::unique_ptr<Slove> slove)
 {
-   sloves.push_back(std::move(slove));
+   registeredSloves.push_back(std::move(slove));
 }
 
 //TODO

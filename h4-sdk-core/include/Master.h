@@ -30,8 +30,8 @@ class Master {
     static constexpr std::uint32_t NSEC_PER_SEC = 1000000000;
     static constexpr std::int64_t cycletime = 1000000;
 
-    static constexpr std::uint16_t IOMAP_SIZE = 4096;
-    static std::uint8_t IOmap[IOMAP_SIZE];
+    static constexpr std::uint16_t DEFAULT_IOMAP_SIZE = 4096;
+    // static std::uint8_t IOmap[DEFAULT_IOMAP_SIZE];
     static OSAL_THREAD_HANDLE threadrt, thread1;
     static int expectedWKC;
     static int wkc;
@@ -42,13 +42,13 @@ class Master {
     const std::string ifName;
     static ecx_contextt ctx;
 
-    std::vector<std::unique_ptr<Slove>> sloves ;
+    std::vector<std::unique_ptr<Slove>> registeredSloves ;
 
     explicit Master(const std::string& ifName);
 
     void initialize() const;
 
-    void addSlove(std::unique_ptr<Slove> slove);
+    void registerSlove(std::unique_ptr<Slove> slove);
 
     void *ecatthread();
 
@@ -57,6 +57,10 @@ class Master {
     void ec_sync(int64 reftime, int64 cycletime, int64 *offsettime);
 
     void add_time_ns(ec_timet *ts, int64 addtime);
+
+    int getProcessDataSize(const ec_slavet& ec_slave) const;
+
+    [[nodiscard]] Slove* getRegisteredSlove(int alias, int position) const;
 
     static int calculateExpectedWorkingCounter();
 

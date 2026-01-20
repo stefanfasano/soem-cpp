@@ -70,7 +70,8 @@ class H4EtherSnacksBoard : public Slove
   AbstractIMU abstractIMU;
 
   public:
-  H4EtherSnacksBoard(const string& name, bool addIMU);
+  H4EtherSnacksBoard(const int& alias, const int& position, const string& name, bool addIMU);
+  H4EtherSnacksBoard(const int& vendorID, const int& productCode, const int& alias, const int& position, const string& name, bool addIMU);
 
   // void update_command_buffer();
   void update() override;
@@ -79,9 +80,9 @@ class H4EtherSnacksBoard : public Slove
 
   virtual void print();
 
-  virtual AbstractIMU get_imu();
+  virtual AbstractIMU getIMU();
 
-  virtual string get_name();
+  virtual string getName();
 
   ~H4EtherSnacksBoard() override = default;
 };

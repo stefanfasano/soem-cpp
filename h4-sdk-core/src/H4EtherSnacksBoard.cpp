@@ -7,8 +7,8 @@
 #include "H4EtherSnacksBoard.h"
 #include <iostream>
 
-H4EtherSnacksBoard::H4EtherSnacksBoard(const string& name, bool addImu) : Slove(), name(name), abstractIMU(name + "_imu") {
-}
+H4EtherSnacksBoard::H4EtherSnacksBoard(const int& alias, const int& position, const string& name, bool addImu) : H4EtherSnacksBoard(VENDOR_ID, PRODUCT_CODE, alias, position, name, addImu){}
+H4EtherSnacksBoard::H4EtherSnacksBoard(const int& vendorID, const int& productCode, const int& alias, const int& position, const string& name, bool addImu) : Slove(vendorID, productCode, alias, position), name(name), abstractIMU(name + "_imu"){}
 
 void H4EtherSnacksBoard::update()
 {
@@ -31,10 +31,10 @@ void H4EtherSnacksBoard::print() {
     abstractIMU.print();
 }
 
-AbstractIMU H4EtherSnacksBoard::get_imu() {
+AbstractIMU H4EtherSnacksBoard::getIMU() {
     return abstractIMU;
 }
 
-string H4EtherSnacksBoard::get_name() {
+string H4EtherSnacksBoard::getName() {
     return name;
 }
