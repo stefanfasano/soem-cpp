@@ -5,6 +5,7 @@
 #include <chrono>
 #include <iostream>
 #include "H4EtherSnacksBoard.h"
+#include "Master.h"
 
 int main(int argc, char* argv[]) {
     std::cout << "staring testbed" << std::endl;;

@@ -8,7 +8,7 @@
 #include <iostream>
 
 H4EtherSnacksBoard::H4EtherSnacksBoard(const int& alias, const int& position, const string& name, bool addImu) : H4EtherSnacksBoard(VENDOR_ID, PRODUCT_CODE, alias, position, name, addImu){}
-H4EtherSnacksBoard::H4EtherSnacksBoard(const int& vendorID, const int& productCode, const int& alias, const int& position, const string& name, bool addImu) : Slove(vendorID, productCode, alias, position), name(name), abstractIMU(name + "_imu"){}
+H4EtherSnacksBoard::H4EtherSnacksBoard(const int& vendorID, const int& productCode, const int& alias, const int& position, const string& name, bool addImu) : Slove(vendorID, productCode, alias, position, 69), name(name), abstractIMU(name + "_imu"){}
 
 void H4EtherSnacksBoard::update()
 {

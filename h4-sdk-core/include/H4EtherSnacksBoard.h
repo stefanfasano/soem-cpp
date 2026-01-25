@@ -11,7 +11,6 @@
 #include <numbers>
 #include <string>
 
-#include "Master.h"
 #include "osal_defs.h"
 #include "Slove.h"
 
@@ -51,7 +50,7 @@ class H4EtherSnacksBoard : public Slove
   }
   OSAL_PACKED_END;
 
-  volatile ProcessData* const pd = reinterpret_cast<volatile ProcessData*>(Master::IOmap);
+  volatile ProcessData* const pd = reinterpret_cast<volatile ProcessData*>(&IOMap);
 
   // Safety check: EtherCAT layout must be exact
   // static_assert(sizeof(ProcessData) == 16, "EtherCAT ProcessData layout mismatch");

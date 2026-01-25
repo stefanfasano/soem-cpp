@@ -83,13 +83,14 @@ void Master::initialize() const
                                               ". Invalid Vendor ID and/or Product Code");
                   }
 
-                  registeredSlove.configure(this, context, port, ec_slave, i + 1, enableDC, cycleTimeInNs);
+                  // registeredSlove->configure(ec_slave);
+                  // registeredSlove.configure(this, context, port, ec_slave, i + 1, enableDC, cycleTimeInNs);
                   // slaveMap[i] = slave;
                }
                else
                {
-                  registeredSlove = new UnconfiguredSlave(ec_slave.getName(), (int) ec_slave.getEep_man(), (int) ec_slave.getEep_id(), alias, position);
-                  registeredSlove.configure(this, getContext(), port, ec_slave, i + 1, false, cycleTimeInNs);
+                  //registeredSlove = new UnconfiguredSlave(ec_slave.getName(), (int) ec_slave.getEep_man(), (int) ec_slave.getEep_id(), alias, position);
+                  //registeredSlove.configure(this, getContext(), port, ec_slave, i + 1, false, cycleTimeInNs);
 
                   std::string slaveNotFoundWarning = "Slave " + std::to_string(alias) + ":" + std::to_string(position) + " not found. No matching alias/position match on EtherCAT bus";
                   throw slaveNotFoundWarning;

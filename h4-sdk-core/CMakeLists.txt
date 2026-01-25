@@ -20,10 +20,12 @@ add_library(h4SDKCore SHARED
         include/H4EtherSnacksBoard.h
         include/Master.h
         include/Slove.h
+        include/BufferOffsetHolder.h
         src/AbstractIMU.cpp
         src/AbstractMotorController.cpp
         src/H4EtherSnacksBoard.cpp
         src/Master.cpp
+        src/BufferOffsetHolder.cpp
 )
 
 target_link_libraries(h4SDKCore soem)

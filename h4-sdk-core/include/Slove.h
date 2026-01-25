@@ -4,19 +4,29 @@
 
 #ifndef H4_SDK_SLOVE_H
 #define H4_SDK_SLOVE_H
+#include <cstddef>
+#include <vector>
 
 class Slove
 {
+    protected:
     const int vendorID;
     const int productCode;
     const int alias;
     const int position;
+    const std::size_t ioMapSize;
+
+    std::vector<std::byte> IOMap;
 
     public:
-
-    Slove(const int& vendorID, const int& productCode, const int& alias, const int& position) : vendorID(vendorID), productCode(productCode), alias(alias), position(position) {}
+    Slove(const int &vendorID, const int &productCode, const int &alias, const int &position, const std::size_t ioMapSize) : vendorID(vendorID),
+        productCode(productCode), alias(alias), position(position), ioMapSize(ioMapSize), IOMap{ioMapSize}
+    {
+    }
 
     virtual void update() = 0;
+
+    // virtual void configure(const std::vector<std::byte>& masterIOMap, ) = 0;
 
     virtual int getVendorID()
     {
