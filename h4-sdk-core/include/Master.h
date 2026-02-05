@@ -42,7 +42,7 @@ class Master {
     const std::string ifName;
     static ecx_contextt ctx;
 
-    std::vector<std::unique_ptr<Slove>> registeredSloves ;
+    std::vector<std::unique_ptr<Slove>> registeredSloves;
 
     explicit Master(const std::string& ifName);
 

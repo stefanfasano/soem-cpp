@@ -4,19 +4,17 @@
 
 #ifndef H4_SDK_BUFFEROFFSETHOLDER_H
 #define H4_SDK_BUFFEROFFSETHOLDER_H
+#include <cstdint>
 
 
 class BufferOffsetHolder
 {
-    const int bitSize;
+    const int bitSize; //The entire bit size of a slave's output or input buffer, plus all bits before that in the master buffer
     int byteOffset{0};
     int bitOffset{0};
 
     public:
-    BufferOffsetHolder(int bitSize, int byteOffset, int bitOffset) : bitSize((byteOffset << 3) + bitOffset + bitSize)
-    {
-        increase(byteOffset, bitOffset);
-    }
+    BufferOffsetHolder(uint32_t byteOffset, uint8_t bitOffset, uint16_t bitSize);
 
     /**
     * Align the offsets on a byte boundary if bytes > 0
@@ -25,15 +23,7 @@ class BufferOffsetHolder
     * @param bytes
     * @param bits
     */
-    void align(int bytes, int bits)
-    {
-        bytes += (bits >> 3);
-        if (bytes > 0 && bitOffset > 0)
-        {
-            byteOffset++;
-            bitOffset = 0;
-        }
-    }
+    void align(int bytes, int bits);
 
     /**
     * Increase the offsets, wrapping bits into bytes.
@@ -42,30 +32,16 @@ class BufferOffsetHolder
     * @param bits
     * @return true if space is available, false if there is not enough space for the increase
     */
-    bool increase(int bytes, int bits)
-    {
-        int newBitOffset = bitOffset + bits;
-        int newByteOffset = byteOffset + bytes + (newBitOffset >> 3);
-        newBitOffset &= 7;
+    bool increase(int bytes, int bits);
 
-        if((newByteOffset << 3) + newBitOffset > bitSize)
-        {
-            return false;
-        }
+    const int getByteOffset() const;
 
-        bitOffset = newBitOffset;
-        byteOffset = newByteOffset;
-        return true;
-    }
-
-    const int getByteOffset() const { return byteOffset; }
-
-    const int getBitOffset() const { return bitOffset; }
+    const int getBitOffset() const;
 
     /**
     * @return the number of bits available in this buffer
     */
-    int getAvailableBits() const{return bitSize - ((byteOffset << 3) + bitOffset);}
+    int getAvailableBits() const;
 };
 
 

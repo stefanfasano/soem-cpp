@@ -83,6 +83,8 @@ void Master::initialize() const
                                               ". Invalid Vendor ID and/or Product Code");
                   }
 
+                  registeredSlove->linkBuffers(BufferOffsetHolder{ec_slave.Ioffset, ec_slave.Istartbit, ec_slave.Ibits},
+                     BufferOffsetHolder{ec_slave.Ooffset, ec_slave.Ostartbit, ec_slave.Obits});
                   // registeredSlove->configure(ec_slave);
                   // registeredSlove.configure(this, context, port, ec_slave, i + 1, enableDC, cycleTimeInNs);
                   // slaveMap[i] = slave;

@@ -7,6 +7,8 @@
 #include <cstddef>
 #include <vector>
 
+#include "BufferOffsetHolder.h"
+
 class Slove
 {
     protected:
@@ -27,6 +29,11 @@ class Slove
     virtual void update() = 0;
 
     // virtual void configure(const std::vector<std::byte>& masterIOMap, ) = 0;
+
+    virtual void linkBuffers(const BufferOffsetHolder& inputOffsetHolder, const BufferOffsetHolder& outputOffsetHolder)
+    {
+
+    }
 
     virtual int getVendorID()
     {
