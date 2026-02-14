@@ -1,5 +1,5 @@
 # soem-cpp
-A light C++ wrapper around ['SOEM'](https://github.com/OpenEtherCATsociety/SOEM?tab=License-1-ov-file)
+A light C++ wrapper around [`SOEM`](https://github.com/OpenEtherCATsociety/SOEM?tab=License-1-ov-file)
 
 ## Requirements
 - [`SOEM`](https://github.com/OpenEtherCATsociety/SOEM?tab=License-1-ov-file) and all its requirements
