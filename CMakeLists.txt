@@ -7,5 +7,5 @@ set(SOEM_BUILD_SAMPLES ON CACHE BOOL "Build SOEM samples")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 add_subdirectory(SOEM)
-add_subdirectory(h4-sdk-core)
+add_subdirectory(soem-cpp-core)
 

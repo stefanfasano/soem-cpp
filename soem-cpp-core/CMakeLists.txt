@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(h4-sdk-core LANGUAGES CXX)
+project(soem-cpp-core LANGUAGES CXX)
 
 # Build settings
 set(CMAKE_CXX_STANDARD 20)
@@ -14,7 +14,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include_directories(src include apps)
 
 ### creating a library
-add_library(h4SDKCore SHARED
+add_library(soemCppCore SHARED
         include/AbstractIMU.h
         include/AbstractMotorController.h
         include/H4EtherSnacksBoard.h
@@ -26,7 +26,7 @@ add_library(h4SDKCore SHARED
         src/Master.cpp
 )
 
-target_link_libraries(h4SDKCore soem)
+target_link_libraries(soemCppCore soem)
 
 #bind_PID_Components(LIB h4SDKCore COMPONENTS ethercatcpp-core/ethercatcpp-core)
 
@@ -36,9 +36,9 @@ target_link_libraries(h4SDKCore soem)
 
 ### creating an executable (h4IMUTestbed)
 add_executable(h4EtherSnacksTestbed apps/H4EtherSnacksTestbed.cpp)
-target_link_libraries(h4EtherSnacksTestbed soem h4SDKCore)
+target_link_libraries(h4EtherSnacksTestbed soem soemCppCore)
 
-install(TARGETS h4SDKCore h4EtherSnacksTestbed
+install(TARGETS soemCppCore h4EtherSnacksTestbed
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
