@@ -3,8 +3,6 @@
 //
 
 #include "H4EtherSnacksBoard.h"
-#include "H4EtherSnacksBoard.h"
-#include "H4EtherSnacksBoard.h"
 #include <iostream>
 
 H4EtherSnacksBoard::H4EtherSnacksBoard(const string& name, bool addImu) : Slove(), name(name), abstractIMU(name + "_imu") {

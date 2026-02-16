@@ -12,20 +12,18 @@ include_directories(src include apps examples)
 add_library(soemCppCore SHARED
         include/AbstractIMU.h
         include/AbstractMotorController.h
-        examples/H4EtherSnacksBoard.h
         include/Master.h
         include/Slove.h
         src/AbstractIMU.cpp
         src/AbstractMotorController.cpp
-        examples/H4EtherSnacksBoard.cpp
         src/Master.cpp
 )
 
 target_link_libraries(soemCppCore soem)
 
 ### creating an executable (h4IMUTestbed)
-add_executable(h4EtherSnacksTestbed examples/H4EtherSnacksTestbed.cpp)
-target_link_libraries(h4EtherSnacksTestbed soem soemCppCore)
+add_executable(h4EtherSnacksTestbed examples/H4EtherSnacksTestbed.cpp examples/H4EtherSnacksBoard.cpp examples/H4EtherSnacksBoard.h)
+target_link_libraries(h4EtherSnacksTestbed soemCppCore)
 
 install(TARGETS soemCppCore h4EtherSnacksTestbed
         RUNTIME DESTINATION bin
