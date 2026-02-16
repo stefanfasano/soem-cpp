@@ -7,13 +7,13 @@
 
 #include <cstdint>
 
-#include "AbstractIMU.h"
+#include "../include/AbstractIMU.h"
 #include <numbers>
 #include <string>
 
-#include "Master.h"
+#include "../include/Master.h"
 #include "osal_defs.h"
-#include "Slove.h"
+#include "../include/Slove.h"
 
 using namespace std;
 
@@ -72,7 +72,6 @@ class H4EtherSnacksBoard : public Slove
   public:
   H4EtherSnacksBoard(const string& name, bool addIMU);
 
-  // void update_command_buffer();
   void update() override;
 
   void read();
