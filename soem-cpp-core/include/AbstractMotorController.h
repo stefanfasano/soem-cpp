@@ -10,7 +10,8 @@ using namespace std;
 
 class AbstractMotorController
 {
-  string name;
+  protected:
+  const string name;
 
   float q; // measured position
   float qd; // measured velocity
@@ -31,23 +32,23 @@ class AbstractMotorController
 
   virtual void setDesiredData(float q_desired, float qd_desired, float qdd_desired, float tau_desired);
 
-  virtual float getMeasuredPosition();
+  virtual float getMeasuredPosition(){ return q; };
 
-  virtual float getMeasuredVelocity();
+  virtual float getMeasuredVelocity(){ return qd; };
 
-  virtual float getMeasuredAcceleration();
+  virtual float getMeasuredAcceleration(){ return qdd; };
 
-  virtual float getMeasuredTorque();
+  virtual float getMeasuredTorque(){ return tau; };
 
-  virtual float getDesiredPosition();
+  virtual float getDesiredPosition(){ return q_desired; };
 
-  virtual float getDesiredVelocity();
+  virtual float getDesiredVelocity(){ return qd_desired; };
 
-  virtual float getDesiredAcceleration();
+  virtual float getDesiredAcceleration(){ return qdd_desired; };
 
-  virtual float getDesiredTorque();
+  virtual float getDesiredTorque(){ return tau_desired; };
 
-  virtual string getName();
+  const virtual string& getName(){ return name; };
 
   virtual ~AbstractMotorController()= default;
 };

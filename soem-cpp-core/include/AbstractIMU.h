@@ -6,47 +6,47 @@
 #define H4_SDK_WARMUP_ABSTRACT_IMU_H
 #include <array>
 #include <string>
-
+using namespace std;
 
 class AbstractIMU
 {
   protected:
-  std::string name_;
+  const string name;
 
-  std::array<float, 3> position; // In world frame (x, y, z)
-  std::array<float, 4> quaternion; // In world frame (x, y, z, s)
-  std::array<float, 3> angularVelocity; // In sensor frame (x, y, z)
-  std::array<float, 3> linearAcceleration; // In sensor frame (x, y, z)
+  array<float, 3> position; // In world frame (x, y, z)
+  array<float, 4> quaternion; // In world frame (x, y, z, s)
+  array<float, 3> angularVelocity; // In sensor frame (x, y, z)
+  array<float, 3> linearAcceleration; // In sensor frame (x, y, z)
   float imuTemp = 0.0;
 
   public:
-  explicit AbstractIMU(const std::string& name);
+  explicit AbstractIMU(const string& name);
 
   virtual void update();
 
   virtual void print();
 
-  virtual void setPosition(const float& x, const float& y, const float& z);
+  virtual void setPosition(float x, float y, float z);
 
-  virtual void setQuaternion(const float& x, const float& y, const float& z, const float& s);
+  virtual void setQuaternion(float x, float y, float z, float s);
 
-  virtual void setAngularVelocity(const float& x, const float& y, const float& z);
+  virtual void setAngularVelocity(float x, float y, float z);
 
-  virtual void setLinearAcceleration(const float& x, const float& y, const float& z);
+  virtual void setLinearAcceleration(float x, float y, float z);
 
-  virtual void setIMUTemp(const float& imuTemp_) { this->imuTemp = imuTemp_; }
+  virtual void setIMUTemp(float imuTemp) { this->imuTemp = imuTemp; }
 
-  virtual std::array<float, 3> getPosition() const { return position; }
+  const virtual array<float, 3>& getPosition() { return position; }
 
-  virtual std::array<float, 4> getQuaternion() const { return quaternion; }
+  const virtual array<float, 4>& getQuaternion() { return quaternion; }
 
-  virtual std::array<float, 3> getAngularVelocity() const { return angularVelocity; }
+  const virtual array<float, 3>& getAngularVelocity() { return angularVelocity; }
 
-  virtual std::array<float, 3> getLinearAcceleration() const { return linearAcceleration; }
+  const virtual array<float, 3>& getLinearAcceleration() { return linearAcceleration; }
 
-  virtual float getIMUTemp() const { return imuTemp; }
+  virtual float getIMUTemp() { return imuTemp; }
 
-  virtual std::string getName() const { return name_; }
+  const virtual string& getName() { return name; }
 
   virtual ~AbstractIMU() = default;
 };

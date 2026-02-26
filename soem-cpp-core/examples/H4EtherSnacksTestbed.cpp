@@ -6,17 +6,17 @@
 #include <iostream>
 #include "H4EtherSnacksBoard.h"
 
-// using std::chrono_literals::operator ""ms;
-
 int main(int argc, char* argv[]) {
-    //auto memory_locker = pid::make_current_thread_real_time();
-    std::cout << "staring testbed" << std::endl;;
+    std::cout << "staring testbed" << std::endl;
+
+	// EtherCat interface name (change to match yours)
+	const string etherCatInterface = "enp89s0";
 
 	// Create slave
 	H4EtherSnacksBoard h4EtherSnacksBoard("testBoard", true);
 
     // Create master and pass in slave
-    Master master("enp89s0", h4EtherSnacksBoard);
+    Master master(etherCatInterface, h4EtherSnacksBoard);
 
 	// Initialize master
 	master.initialize();
