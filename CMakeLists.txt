@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(h4-sdk)
+project(soem-cpp)
 
 # Set install prefix (optional)
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/install)
