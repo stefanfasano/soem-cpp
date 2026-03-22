@@ -5,6 +5,7 @@
 #include <chrono>
 #include <iostream>
 #include "H4EtherSnacksBoard.h"
+#include "../include/Master.h"
 
 int main(int argc, char* argv[]) {
     std::cout << "staring testbed" << std::endl;
@@ -12,11 +13,15 @@ int main(int argc, char* argv[]) {
 	// EtherCat interface name (change to match yours)
 	const string etherCatInterface = "enp89s0";
 
-	// Create slave
-	H4EtherSnacksBoard h4EtherSnacksBoard("testBoard", true);
+	// Create EtherSnacks board
+	H4EtherSnacksBoard h4EtherSnacksBoard(6969, 0, "testBoard", true);
+	H4EtherSnacksBoard* h4EtherSnacksBoardPtr = &h4EtherSnacksBoard;
 
-    // Create master and pass in slave
-    Master master(etherCatInterface, h4EtherSnacksBoard);
+	// Create master and add board to it
+	Master master("enp89s0");
+	master.registerSlove(std::unique_ptr<H4EtherSnacksBoard>(h4EtherSnacksBoardPtr));
+	// master.addSlove(std::make_unique<H4EtherSnacksBoard>(h4EtherSnacksBoard));
+	// master.addSlove(std::make_unique<H4EtherSnacksBoard>("testBoard", true));
 
 	// Initialize master
 	master.initialize();

@@ -11,9 +11,8 @@
 #include <numbers>
 #include <string>
 
-#include "../include/Master.h"
 #include "osal_defs.h"
-#include "../include/Slove.h"
+#include "Slove.h"
 
 using namespace std;
 
@@ -51,7 +50,7 @@ class H4EtherSnacksBoard : public Slove
   }
   OSAL_PACKED_END;
 
-  volatile ProcessData* const pd = reinterpret_cast<volatile ProcessData*>(Master::IOmap);
+  volatile ProcessData* const pd = reinterpret_cast<volatile ProcessData*>(&IOMap);
 
   // Safety check: EtherCAT layout must be exact
   // static_assert(sizeof(ProcessData) == 16, "EtherCAT ProcessData layout mismatch");
@@ -70,7 +69,8 @@ class H4EtherSnacksBoard : public Slove
   AbstractIMU abstractIMU;
 
   public:
-  H4EtherSnacksBoard(const string& name, bool addIMU);
+  H4EtherSnacksBoard(const int& alias, const int& position, const string& name, bool addIMU);
+  H4EtherSnacksBoard(const int& vendorID, const int& productCode, const int& alias, const int& position, const string& name, bool addIMU);
 
   void update() override;
 
@@ -84,6 +84,5 @@ class H4EtherSnacksBoard : public Slove
 
   ~H4EtherSnacksBoard() override = default;
 };
-
 
 #endif// H4_SDK_WARMUP_H4_ETHERSNACKS_BOARD_H
