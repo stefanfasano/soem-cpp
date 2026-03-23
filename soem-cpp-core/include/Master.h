@@ -48,7 +48,7 @@ public:
 
     void initialize() const;
 
-    void registerSlove(std::unique_ptr<Slove> slove);
+    void registerSlove(Slove& slove);
 
     void *ecatthread();
 

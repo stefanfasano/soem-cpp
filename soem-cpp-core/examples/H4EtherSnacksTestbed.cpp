@@ -19,7 +19,8 @@ int main(int argc, char* argv[]) {
 
 	// Create master and add board to it
 	Master master("enp89s0");
-	master.registerSlove(std::unique_ptr<H4EtherSnacksBoard>(h4EtherSnacksBoardPtr));
+	master.registerSlove(h4EtherSnacksBoard);
+	// master.registerSlove(std::unique_ptr<H4EtherSnacksBoard>(h4EtherSnacksBoardPtr));
 	// master.addSlove(std::make_unique<H4EtherSnacksBoard>(h4EtherSnacksBoard));
 	// master.addSlove(std::make_unique<H4EtherSnacksBoard>("testBoard", true));
 

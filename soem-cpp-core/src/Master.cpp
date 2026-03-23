@@ -503,9 +503,9 @@ int Master::getCurrentWorkingCounter()
    return wkc;
 }
 
-void Master::registerSlove(std::unique_ptr<Slove> slove)
+void Master::registerSlove(Slove& slove)
 {
-   registeredSloves.push_back(std::move(slove));
+   registeredSloves.push_back(std::unique_ptr<Slove>(&slove));
 }
 
 //TODO
