@@ -15,10 +15,13 @@ add_library(soemCppCore SHARED
         include/Master.h
         include/Slove.h
         include/BufferOffsetHolder.h
+        include/SyncManager.h
         src/AbstractIMU.cpp
         src/AbstractMotorController.cpp
         src/Master.cpp
+        src/Slove.cpp
         src/BufferOffsetHolder.cpp
+        src/SyncManager.cpp
 )
 
 target_link_libraries(soemCppCore soem)

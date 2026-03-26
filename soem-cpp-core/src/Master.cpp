@@ -60,6 +60,7 @@ void Master::initialize() const
             // Calculating the Process Data size for that slave
             processDataSize += getProcessDataSize(ec_slave);
 
+            // Determine alias and position of slove
             int alias{}, position{};
             if(ec_slave.aliasadr == 0 || ec_slave.aliasadr == previousAlias)
             {
@@ -83,7 +84,7 @@ void Master::initialize() const
                                               ". Invalid Vendor ID and/or Product Code");
                   }
 
-                  registeredSlove->linkBuffers(BufferOffsetHolder{ec_slave.Ioffset, ec_slave.Istartbit, ec_slave.Ibits},
+                  registeredSlove->configure(BufferOffsetHolder{ec_slave.Ioffset, ec_slave.Istartbit, ec_slave.Ibits},
                      BufferOffsetHolder{ec_slave.Ooffset, ec_slave.Ostartbit, ec_slave.Obits});
                   // registeredSlove->configure(ec_slave);
                   // registeredSlove.configure(this, context, port, ec_slave, i + 1, enableDC, cycleTimeInNs);
@@ -122,6 +123,9 @@ void Master::initialize() const
          const int measuredIOMapSize = ecx_config_map_group(&ctx, &IOMap, 0);
          if (measuredIOMapSize > ioMapSize)
             printf("ERROR: Error mapping slaves onto IOmap. IOmap size is overflowing supplied buffer (as calculated by process data size)\n");
+
+         for (int i = 0; i < registeredSloves.size(); i++)
+            registeredSloves[i]->linkBuffers(IOMap);
 
          // Calculate working counter
          expectedWKC = calculateExpectedWorkingCounter();//group->outputsWKC * 2) + group->inputsWKC;

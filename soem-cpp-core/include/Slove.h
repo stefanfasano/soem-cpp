@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "BufferOffsetHolder.h"
+#include "SyncManager.h"
 
 class Slove
 {
@@ -19,20 +20,20 @@ protected:
 
     std::vector<std::byte> IOMap;
 
+    std::vector<SyncManager> syncManagers;
+
 public:
-    Slove(const int &vendorID, const int &productCode, const int &alias, const int &position, const std::size_t ioMapSize) : vendorID(vendorID),
-        productCode(productCode), alias(alias), position(position), ioMapSize(ioMapSize), IOMap{ioMapSize}
-    {
-    }
+    Slove(const int &vendorID, const int &productCode, const int &alias, const int &position, const std::size_t ioMapSize);
 
     virtual void update() = 0;
 
     // virtual void configure(const std::vector<std::byte>& masterIOMap, ) = 0;
 
-    virtual void linkBuffers(const BufferOffsetHolder& inputOffsetHolder, const BufferOffsetHolder& outputOffsetHolder)
-    {
+    virtual void configure(const BufferOffsetHolder& inputOffsetHolder, const BufferOffsetHolder& outputOffsetHolder);
 
-    }
+    virtual void linkBuffers(const std::vector<std::byte>& masterIOMap);
+
+    virtual void registerSyncManager(SyncManager::SyncManagerType syncManagerTyoe);
 
     virtual int getVendorID()
     {
