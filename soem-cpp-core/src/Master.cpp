@@ -509,7 +509,7 @@ int Master::getCurrentWorkingCounter()
 
 void Master::registerSlove(Slove& slove)
 {
-   registeredSloves.push_back(std::unique_ptr<Slove>(&slove));
+   registeredSloves.emplace_back(std::unique_ptr<Slove>(&slove));
 }
 
 //TODO

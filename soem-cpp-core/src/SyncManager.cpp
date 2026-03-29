@@ -4,7 +4,7 @@
 
 #include "../include/SyncManager.h"
 
-SyncManager::SyncManager(SyncManagerType syncManagerType): syncManagerType(syncManagerType)
+SyncManager::SyncManager(const SyncManagerType& syncManagerType): syncManagerType(syncManagerType), pdos()
 {
     switch (syncManagerType)
     {
@@ -14,4 +14,9 @@ SyncManager::SyncManager(SyncManagerType syncManagerType): syncManagerType(syncM
         case TXPDO: pdoAssignIndex = 0x1c13; break;
         default: pdoAssignIndex = 0; break;
     }
+}
+
+void SyncManager::registerPDO(PDO &pdo)
+{
+    pdos.emplace_back(std::unique_ptr<PDO>(&pdo));
 }

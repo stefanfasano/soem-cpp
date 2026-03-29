@@ -4,8 +4,10 @@
 
 #ifndef SOEM_CPP_SYNCMANAGER_H
 #define SOEM_CPP_SYNCMANAGER_H
-#include <vector>
 
+#include <memory>
+#include <vector>
+#include "PDO.h"
 
 class SyncManager {
 
@@ -21,9 +23,16 @@ public:
 private:
     SyncManagerType syncManagerType;
     int pdoAssignIndex;
+    std::vector<std::unique_ptr<PDO>> pdos;
 
 public:
-    explicit SyncManager(SyncManagerType syncManagerType);
+    explicit SyncManager(const SyncManagerType& syncManagerType);
+
+    [[nodiscard]] int getPdoAssignIndex() const { return pdoAssignIndex; }
+
+    [[nodiscard]] const SyncManagerType& getSyncManagerType() const { return syncManagerType; }
+
+    void registerPDO(PDO& pdo);
 };
 
 

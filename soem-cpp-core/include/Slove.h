@@ -33,7 +33,7 @@ public:
 
     virtual void linkBuffers(const std::vector<std::byte>& masterIOMap);
 
-    virtual void registerSyncManager(SyncManager::SyncManagerType syncManagerTyoe);
+    virtual SyncManager& createAndRegisterSyncManager(SyncManager::SyncManagerType syncManagerType);
 
     virtual int getVendorID()
     {
