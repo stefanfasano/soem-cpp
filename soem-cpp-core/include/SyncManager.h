@@ -7,13 +7,16 @@
 
 #include <memory>
 #include <vector>
+
+#include "BufferOffsetHolder.h"
 #include "PDO.h"
 
-class SyncManager {
-
+class SyncManager
+{
 public:
     // The four possible Sync Manager types
-    enum SyncManagerType {
+    enum SyncManagerType
+    {
         ASYNC_OUT,
         ASYNC_IN,
         TXPDO,
@@ -33,6 +36,8 @@ public:
     [[nodiscard]] const SyncManagerType& getSyncManagerType() const { return syncManagerType; }
 
     void registerPDO(PDO& pdo);
+
+    void linkBuffers(const std::vector<std::byte>& masterIOMap, BufferOffsetHolder& bufferOffsetHolder);
 };
 
 

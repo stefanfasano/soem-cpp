@@ -5,13 +5,17 @@
 #ifndef SOEM_CPP_PDO_H
 #define SOEM_CPP_PDO_H
 
+#include <vector>
+#include "BufferOffsetHolder.h"
 
-class PDO {
 
+struct PDO
+{
     int address;
 
-    public:
     explicit PDO(int address);
+
+    void linkBuffers(const std::vector<std::byte>& masterIOMap, BufferOffsetHolder& bufferOffsetHolder);
 
     [[nodiscard]] int getAddress() const { return address; }
 

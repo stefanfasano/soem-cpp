@@ -124,8 +124,8 @@ void Master::initialize() const
          if (measuredIOMapSize > ioMapSize)
             printf("ERROR: Error mapping slaves onto IOmap. IOmap size is overflowing supplied buffer (as calculated by process data size)\n");
 
-         for (int i = 0; i < registeredSloves.size(); i++)
-            registeredSloves[i]->linkBuffers(IOMap);
+         // for (int i = 0; i < registeredSloves.size(); i++)
+         //    registeredSloves[i]->linkBuffers(IOMap);
 
          // Calculate working counter
          expectedWKC = calculateExpectedWorkingCounter();//group->outputsWKC * 2) + group->inputsWKC;

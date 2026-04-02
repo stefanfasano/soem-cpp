@@ -23,7 +23,7 @@ protected:
     std::vector<SyncManager> syncManagers;
 
 public:
-    Slove(const int &vendorID, const int &productCode, const int &alias, const int &position, const std::size_t ioMapSize);
+    Slove(int vendorID, int productCode, int alias, int position, std::size_t ioMapSize);
 
     virtual void update() = 0;
 
@@ -31,7 +31,8 @@ public:
 
     virtual void configure(const BufferOffsetHolder& inputOffsetHolder, const BufferOffsetHolder& outputOffsetHolder);
 
-    virtual void linkBuffers(const std::vector<std::byte>& masterIOMap);
+    virtual void linkBuffers(const std::vector<std::byte>& masterIOMap, BufferOffsetHolder& inputOffsetHolder,
+                             BufferOffsetHolder& outputOffsetHolder);
 
     virtual SyncManager& createAndRegisterSyncManager(SyncManager::SyncManagerType syncManagerType);
 
